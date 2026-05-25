@@ -1,0 +1,2204 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClinicFlow Growth Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+        }
+        .font-serif-royal {
+            font-family: 'Noto Serif', Georgia, serif;
+        }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        html, body { overflow-x: hidden; }
+        .animate-fade { animation: fadeInUp 0.8s ease-out forwards; }
+        html { scroll-behavior: smooth; }
+        .slide { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 4rem 10%; position: relative; overflow: hidden; }
+        
+        /* Font swap for Arabic */
+        html[dir="rtl"], html[dir="rtl"] body, html[dir="rtl"] button {
+            font-family: 'Cairo', sans-serif !important;
+        }
+
+        /* Responsive sidebar & slide padding for LTR / RTL */
+        @media (min-width: 768px) {
+            .slide { padding-left: 16rem; padding-right: 10%; }
+            html[dir="rtl"] .slide { padding-right: 16rem; padding-left: 10%; }
+        }
+        
+        .bg-gradient-mesh { background: radial-gradient(circle at 100% 100%, #eff6ff 0%, #ffffff 100%); }
+        .feature-card:hover { transform: translateY(-10px); }
+        .timeline-line { border-left: 2px solid #e2e8f0; position: absolute; left: 1.5rem; top: 2rem; bottom: 0; }
+        
+        /* Sidebar Styles */
+        .sidebar { position: fixed; top: 50%; transform: translateY(-50%); z-index: 50; display: flex; flex-direction: column; gap: 2.5rem; left: 2.5rem; right: auto; width: 2.5rem; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow: visible; }
+        .sidebar:hover { width: 16rem; }
+        html[dir="rtl"] .sidebar { right: 2.5rem; left: auto; }
+        html[dir="rtl"] .sidebar:hover { width: 16rem; right: 2.5rem; left: auto; }
+        
+        .nav-item { display: flex; align-items: center; gap: 1rem; cursor: pointer; position: relative; }
+        html[dir="rtl"] .nav-item { flex-direction: row-reverse; }
+
+        .nav-dot { width: 14px; height: 14px; border-radius: 50%; background-color: #cbd5e1; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; z-index: 2; border: 2px solid white; box-shadow: 0 0 0 1px #cbd5e1; }
+        .nav-item.active .nav-dot { background-color: #2563eb; transform: scale(1.4); box-shadow: 0 0 0 2px #2563eb; border-color: white; }
+        .nav-item:hover .nav-dot { background-color: #60a5fa; }
+        
+        .nav-line { position: absolute; top: 14px; bottom: -2.5rem; width: 2px; background-color: #e2e8f0; z-index: 1; transition: background-color 0.3s; left: 6px; }
+        html[dir="rtl"] .nav-line { right: 6px; left: auto; }
+
+        .nav-item:last-child .nav-line { display: none; }
+        .nav-item.active .nav-line { background-color: #bfdbfe; }
+        
+.nav-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%) translateX(0);
+    margin-left: 0.5rem; /* space from dot */
+    margin-right: 0.5rem;
+    left: 1.75rem; /* align right of dot by default */
+}
+html[dir="rtl"] .nav-label {
+    right: 1.75rem;
+    left: auto;
+}
+
+        .sidebar:hover .nav-label { opacity: 1; transform: translateX(0); }
+        .nav-item.active .nav-label { opacity: 1; color: #1e293b; font-size: 0.875rem; }
+        .sidebar:hover .nav-item:not(.active) .nav-label { color: #64748b; }
+
+        #goTopBtn { position: fixed; bottom: 1rem; z-index: 50; right: 1rem; }
+        html[dir="rtl"] #goTopBtn { left: 1rem; right: auto; }
+    </style>
+</head>
+<body class="text-slate-800 font-sans antialiased bg-slate-50">
+
+    <!-- Top Navigation Bar -->
+    <nav class="fixed top-0 w-full bg-white/80 backdrop-blur-md shadow-sm z-50 px-8 py-4 flex justify-between items-center border-b border-slate-100">
+        <div class="font-bold text-xl text-blue-600 flex items-center"><i class="fa-solid fa-rocket mr-2 rtl:ml-2 rtl:mr-0"></i><span>ClinicFlow</span></div>
+        <div class="flex gap-3 items-center">
+            <button onclick="toggleLanguage()" id="langBtn" class="bg-blue-50 text-blue-700 hover:bg-blue-100 px-4 py-2 rounded-full font-medium transition text-sm flex items-center gap-2">
+                <i class="fa-solid fa-language"></i> العربية
+            </button>
+            <button onclick="prevSlide()" id="prevBtn" class="bg-slate-100 hover:bg-slate-200 text-slate-800 px-5 py-2 rounded-full font-medium transition text-sm">Previous</button>
+            <button onclick="nextSlide()" id="nextBtn" class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 rounded-full font-medium transition text-sm">Next</button>
+        </div>
+    </nav>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar hidden md:flex" id="sidebar">
+        <!-- populated by JS -->
+    </div>
+
+    <!-- ============================================ -->
+    <!-- ENGLISH VERSION SLIDES                       -->
+    <!-- ============================================ -->
+    <div id="presentation-en" class="lang-section">
+        
+        <!-- Slide 1: Hero -->
+        <section class="slide bg-white" id="slide-1-en">
+            <div class="flex justify-start items-center max-w-4xl mx-auto gap-8">
+  <div class="flex-1">
+    <div class="flex justify-start items-center max-w-4xl mx-auto gap-8">
+        <div class="flex-1">
+            <span class="text-blue-600 font-bold tracking-widest uppercase text-sm">Enterprise Growth Suite</span>
+            <h1 class="text-6xl md:text-7xl font-extrabold text-slate-900 mt-4 mb-6 leading-tight">Unified Clinic <br><span class="text-blue-600">Growth Engine</span></h1>
+            <p class="text-xl text-slate-600 mb-10 max-w-2xl">Scale 50x by eliminating chaos. A fully compliant system aligning with Saudi Vision 2030, NCA ECC, and SDAIA PDPL guidelines to scale sales, marketing, and operations securely.</p>
+        </div>
+        <div class="flex-shrink-0" style="width: 30rem;">
+      <img src="media/Grow50x_v1.png" alt="Grow50x" width="100%" style="border-radius: 0.5rem; box-shadow: 0 10px 15px rgba(0,0,0,0.1);"/>
+        </div>
+    </div>
+</section>
+
+        <!-- Slide 2: Frontend & Edge Architecture -->
+        <section class="slide bg-gradient-mesh" id="slide-2-en">
+            <div class="max-w-6xl w-full mx-auto">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-sm">Tech Stack Part 1</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-8 animate-fade mt-2">Frontend & Edge Infrastructure</h2>
+                
+                <div class="overflow-hidden bg-white rounded-3xl border border-slate-100 shadow-xl animate-fade">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-900 text-white">
+                                <th class="p-6 font-bold text-lg w-1/2"><i class="fa-brands fa-react mr-2 text-blue-400"></i>Frontend & App Router (Next.js 14)</th>
+                                <th class="p-6 font-bold text-lg w-1/2"><i class="fa-solid fa-network-wired mr-2 text-emerald-400"></i>In-Kingdom Edge Infrastructure</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="p-8">
+                                    <div class="flex items-start">
+                                        <i class="fa-solid fa-bolt text-amber-500 mt-1 mr-4 text-xl"></i>
+                                        <div>
+                                            <h4 class="font-bold text-slate-900 text-lg mb-1">Server-Side Rendering (SSR)</h4>
+                                            <p class="text-slate-600 text-sm">Lightning-fast initial page loads crucial for funnel conversion and local SEO optimization.</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-8">
+                                    <div class="flex items-start">
+                                        <i class="fa-solid fa-globe text-blue-500 mt-1 mr-4 text-xl"></i>
+                                        <div>
+                                            <h4 class="font-bold text-slate-900 text-lg mb-1">Local Edge Nodes</h4>
+                                            <p class="text-slate-600 text-sm">Content routing optimized through Riyadh/Jeddah edge servers to guarantee compliance and sub-30ms local latency.</p>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="p-8">
+                                    <div class="flex items-start">
+                                        <i class="fa-solid fa-mobile-screen-button text-blue-500 mt-1 mr-4 text-xl"></i>
+                                        <div>
+                                            <h4 class="font-bold text-slate-900 text-lg mb-1">Responsive Dashboards</h4>
+                                            <p class="text-slate-600 text-sm">Fluid, complex UI states managed seamlessly across desktop and mobile devices.</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-8">
+                                    <div class="flex items-start">
+                                        <i class="fa-solid fa-shield text-emerald-500 mt-1 mr-4 text-xl"></i>
+                                        <div>
+                                            <h4 class="font-bold text-slate-900 text-lg mb-1">Enterprise WAF & DDoS</h4>
+                                            <p class="text-slate-600 text-sm">Fully aligned with NCA ECC requirements to protect national health data environments.</p>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="p-8">
+                                    <div class="flex items-start">
+                                        <i class="fa-solid fa-code text-purple-500 mt-1 mr-4 text-xl"></i>
+                                        <div>
+                                            <h4 class="font-bold text-slate-900 text-lg mb-1">TypeScript Driven</h4>
+                                            <p class="text-slate-600 text-sm">End-to-end type safety eliminating runtime errors before production deployments.</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-8">
+                                    <div class="flex items-start">
+                                        <i class="fa-solid fa-image text-amber-500 mt-1 mr-4 text-xl"></i>
+                                        <div>
+                                            <h4 class="font-bold text-slate-900 text-lg mb-1">Data Localization</h4>
+                                            <p class="text-slate-600 text-sm">Edge-level routing controls ensuring patient traffic doesn't bypass local regulatory firewalls.</p>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: Backend & Database -->
+        <section class="slide bg-slate-900 text-white" id="slide-3-en">
+            <div class="max-w-6xl w-full mx-auto">
+                <span class="text-blue-400 font-bold tracking-widest uppercase text-sm">Tech Stack Part 2</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-12 animate-fade mt-2">Core Engine & Security</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-slate-800 p-8 rounded-3xl border border-slate-700 shadow-xl animate-fade">
+                        <i class="fa-brands fa-node-js text-5xl text-emerald-500 mb-6"></i>
+                        <h3 class="text-xl font-bold mb-4">Node.js Microservices</h3>
+                        <p class="text-slate-300 text-sm mb-4">Event-driven architecture built to handle thousands of concurrent webhooks, AI requests, and SMS triggers without blocking.</p>
+                        <div class="bg-slate-900 rounded-lg p-3 text-xs text-emerald-400 font-mono">
+                            &gt; Scalable cluster processing<br>
+                            &gt; Redis caching layers<br>
+                            &gt; BullMQ job queues
+                        </div>
+                    </div>
+                    <div class="bg-slate-800 p-8 rounded-3xl border border-slate-700 shadow-xl animate-fade" style="animation-delay: 0.1s">
+                        <i class="fa-solid fa-database text-5xl text-blue-500 mb-6"></i>
+                        <h3 class="text-xl font-bold mb-4">In-Kingdom Multi-Tenancy</h3>
+                        <p class="text-slate-300 text-sm mb-4">PostgreSQL multi-tenant schema isolation, with all storage strictly hosted in Saudi Arabia (NCA ECC-4.2 compliance).</p>
+                        <div class="bg-slate-900 rounded-lg p-3 text-xs text-blue-400 font-mono">
+                            &gt; Local data residency<br>
+                            &gt; Mathematical isolation<br>
+                            &gt; In-Kingdom replication
+                        </div>
+                    </div>
+                    <div class="bg-slate-800 p-8 rounded-3xl border border-slate-700 shadow-xl animate-fade" style="animation-delay: 0.2s">
+                        <i class="fa-solid fa-lock text-5xl text-purple-500 mb-6"></i>
+                        <h3 class="text-xl font-bold mb-4">NCA ECC & SDAIA PDPL</h3>
+                        <p class="text-slate-300 text-sm mb-4">Complies with Personal Data Protection Law (PDPL) & NCA guidelines. Restricts health data access as per PDPL Article 23.</p>
+                        <div class="bg-slate-900 rounded-lg p-3 text-xs text-purple-400 font-mono">
+                            &gt; SDAIA PDPL compliant<br>
+                            &gt; NCA ECC-1:2018 controls<br>
+                            &gt; Strict health data access
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3.5: System Architecture -->
+        <section class="slide bg-slate-50 flex flex-col justify-center" id="slide-3-5-en">
+            <div class="max-w-6xl w-full mx-auto flex flex-col items-center text-center">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-sm mb-2">Architecture</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-8 animate-fade">Multi-Tenant System Flow</h2>
+                <div class="w-full bg-white p-4 rounded-3xl shadow-xl border border-slate-200 animate-fade" style="animation-delay: 0.1s;">
+                    <img src="media/architecture_v2.png" alt="Architecture Diagram" class="w-full max-h-[60vh] object-contain rounded-2xl">
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: Growth Features -->
+        <section class="slide bg-white" id="slide-4-en">
+            <h2 class="text-4xl font-bold mb-16 animate-fade">Full Growth Suite</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="animate-fade p-6 border border-slate-100 rounded-2xl bg-slate-50">
+                    <i class="fa-solid fa-calendar-check text-blue-600 text-3xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Smart Booking & PDPL Consent</h3>
+                    <p class="text-slate-600 mb-3 text-sm italic">"Review and confirm your data consent. Your appointment is scheduled!"</p>
+                    <p class="text-slate-700 text-sm font-semibold">Benefit: Built-in explicit consent templates satisfying SDAIA requirements (Articles 5 & 10) automatically.</p>
+                </div>
+                <div class="animate-fade p-6 border border-slate-100 rounded-2xl bg-slate-50">
+                    <i class="fa-solid fa-brain text-emerald-600 text-3xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">24/7 AI Customer Service</h3>
+                    <p class="text-slate-600 mb-3 text-sm italic">"Instant answers to patient inquiries 24/7, without team expansion."</p>
+                    <p class="text-slate-700 text-sm font-semibold">Benefit: Scale patient communication capacity infinitely without increasing payroll.</p>
+                </div>
+                <div class="animate-fade p-6 border border-slate-100 rounded-2xl bg-slate-50">
+                    <i class="fa-solid fa-file-invoice-dollar text-blue-600 text-3xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Revenue & Reporting</h3>
+                    <p class="text-slate-600 mb-3 text-sm italic">"See your actual income and identify which marketing channel is winning."</p>
+                    <p class="text-slate-700 text-sm font-semibold">Benefit: Stop guessing; invest budget only in the marketing channels that drive 50x ROI.</p>
+                </div>
+                <div class="animate-fade p-6 border border-slate-100 rounded-2xl bg-slate-50">
+                    <i class="fa-solid fa-star text-amber-500 text-3xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Reputation Engine</h3>
+                    <p class="text-slate-600 mb-3 text-sm italic">"Automated review requests sent to satisfied customers at the right moment."</p>
+                    <p class="text-slate-700 text-sm font-semibold">Benefit: Build institutional trust and authority to acquire new customers organically.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: Integration Ecosystem -->
+        <section class="slide bg-gradient-mesh" id="slide-5-en">
+            <h2 class="text-4xl font-bold mb-12 animate-fade">Seamless Integration Ecosystem</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 animate-fade">
+                    <div class="text-blue-500 text-2xl mb-4 flex gap-3">
+                        <i class="fa-brands fa-instagram"></i>
+                        <i class="fa-brands fa-facebook"></i>
+                        <i class="fa-brands fa-tailwind"></i>
+                        <i class="fa-brands fa-linkedin"></i>
+                        <i class="fa-brands fa-snapchat"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Social Media</h3>
+                    <p class="text-slate-600 text-sm mb-3">Instagram, Facebook, TikTok, LinkedIn, Snapchat, YouTube, X.com.</p>
+                    <p class="text-slate-500 text-xs font-medium bg-slate-50 p-2 rounded">Unified content planning and omni-channel lead generation.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 animate-fade" style="animation-delay: 0.1s">
+                    <div class="text-emerald-500 text-2xl mb-4 flex gap-3">
+                        <i class="fa-brands fa-whatsapp"></i>
+                        <i class="fa-brands fa-slack"></i>
+                        <i class="fa-regular fa-file-excel"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Office & Comms</h3>
+                    <p class="text-slate-600 text-sm mb-3">WhatsApp, Slack, Google Docs, Excel, Google Calendar.</p>
+                    <p class="text-slate-500 text-xs font-medium bg-slate-50 p-2 rounded">Internal team sync, patient chats, and automated scheduling.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 animate-fade" style="animation-delay: 0.2s">
+                    <div class="text-purple-500 text-2xl mb-4 flex gap-3">
+                        <i class="fa-solid fa-credit-card"></i>
+                        <i class="fa-solid fa-wallet"></i>
+                        <i class="fa-brands fa-google"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Business & Web</h3>
+                    <p class="text-slate-600 text-sm mb-3">Moyasar, PayTabs, Tap Payments, HyperPay, Google Business.</p>
+                    <p class="text-slate-500 text-xs font-medium bg-slate-50 p-2 rounded">Secure Saudi localized payments (mada/Apple Pay), embedded funnels, and local SEO tracking.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 animate-fade" style="animation-delay: 0.3s">
+                    <div class="text-amber-500 text-2xl mb-4 flex gap-3">
+                        <i class="fa-solid fa-robot"></i>
+                        <i class="fa-solid fa-bolt"></i>
+                        <i class="fa-solid fa-network-wired"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">AI & Automation</h3>
+                    <p class="text-slate-600 text-sm mb-3">ChatGPT, Make, n8n.</p>
+                    <p class="text-slate-500 text-xs font-medium bg-slate-50 p-2 rounded">Visual workflows, data orchestration, and 24/7 AI conversational agents.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: Social Media -->
+        <section class="slide bg-gradient-mesh" id="slide-6-en">
+            <div class="max-w-6xl w-full mx-auto">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-sm">Social Integration</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-8 animate-fade mt-2">Social Media Platforms</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 animate-fade">
+                    <div class="bg-white p-6 rounded-2xl border-l-4 border-indigo-500 shadow-sm hover:shadow-md transition-all duration-300">
+                        <h3 class="text-xl font-bold text-slate-900">Instagram</h3>
+                        <p class="text-slate-600 text-xs mb-3">Visual storytelling, stories, reels.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border-l-4 border-blue-500 shadow-sm hover:shadow-md transition-all duration-300">
+                        <h3 class="text-xl font-bold text-slate-900">Facebook</h3>
+                        <p class="text-slate-600 text-xs mb-3">Community pages, ads, messenger.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border-l-4 border-purple-500 shadow-sm hover:shadow-md transition-all duration-300">
+                        <h3 class="text-xl font-bold text-slate-900">TikTok</h3>
+                        <p class="text-slate-600 text-xs mb-3">Short-form video engagement.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border-l-4 border-green-500 shadow-sm hover:shadow-md transition-all duration-300">
+                        <h3 class="text-xl font-bold text-slate-900">LinkedIn</h3>
+                        <p class="text-slate-600 text-xs mb-3">Professional networking, B2B content.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border-l-4 border-yellow-500 shadow-sm hover:shadow-md transition-all duration-300">
+                        <h3 class="text-xl font-bold text-slate-900">YouTube</h3>
+                        <p class="text-slate-600 text-xs mb-3">Long-form video, tutorials.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border-l-4 border-gray-500 shadow-sm hover:shadow-md transition-all duration-300">
+                        <h3 class="text-xl font-bold text-slate-900">X (Twitter)</h3>
+                        <p class="text-slate-600 text-xs mb-3">Micro‑blogging, real‑time updates.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: Saudi Payments -->
+        <section class="slide bg-gradient-mesh" id="slide-7-en">
+            <div class="max-w-6xl w-full mx-auto">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-sm">Regional Compliance & Payments</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-8 animate-fade mt-2">Saudi Arabia Payment Gateways</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 animate-fade">
+                    <!-- Moyasar -->
+                    <div class="bg-white p-6 rounded-2xl border-l-4 border-blue-500 shadow-sm hover:shadow-md transition-all duration-300">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-bold text-slate-900">1. Moyasar</h3>
+                            <span class="bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">Developer-First</span>
+                        </div>
+                        <p class="text-slate-600 text-xs mb-3 font-semibold">Payment Methods: mada, Apple Pay, Samsung Pay, STC Pay, Visa, Mastercard, AMEX.</p>
+                        <p class="text-slate-600 text-xs mb-3"><strong>Why it feels like Stripe:</strong> Focuses heavily on clean RESTful APIs, excellent developer sandboxes, modern SDKs, and supports advanced recurring billing / split-payment infra.</p>
+                        <p class="text-emerald-600 text-xs font-semibold"><i class="fa-solid fa-shield-halved mr-1"></i> SAMA Licensed & ZATCA eMSP infrastructure certified.</p>
+                    </div>
+
+                    <!-- PayTabs -->
+                    <div class="bg-white p-6 rounded-2xl border-l-4 border-emerald-500 shadow-sm hover:shadow-md transition-all duration-300">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-bold text-slate-900">2. PayTabs</h3>
+                            <span class="bg-emerald-50 text-emerald-700 text-xs font-semibold px-3 py-1 rounded-full">Marketplaces & Orchestration</span>
+                        </div>
+                        <p class="text-slate-600 text-xs mb-3 font-semibold">Payment Methods: mada, Apple Pay, STC Pay, Visa, Mastercard, AMEX, GCC Networks.</p>
+                        <p class="text-slate-600 text-xs mb-3"><strong>Why it feels like Stripe:</strong> Behaves like Stripe Connect for complex operations—perfect for marketplace split-payments, seller onboarding, and robust multi-region plugins.</p>
+                        <p class="text-emerald-600 text-xs font-semibold"><i class="fa-solid fa-shield-halved mr-1"></i> Robust regional leader with deep integration ecosystems.</p>
+                    </div>
+
+                    <!-- Tap Payments -->
+                    <div class="bg-white p-6 rounded-2xl border-l-4 border-purple-500 shadow-sm hover:shadow-md transition-all duration-300">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-bold text-slate-900">3. Tap Payments</h3>
+                            <span class="bg-purple-50 text-purple-700 text-xs font-semibold px-3 py-1 rounded-full">Startups & Fast Setup</span>
+                        </div>
+                        <p class="text-slate-600 text-xs mb-3 font-semibold">Payment Methods: mada, STC Pay, Apple Pay, Google Pay, Visa, Mastercard, AMEX, Tamara, Tabby.</p>
+                        <p class="text-slate-600 text-xs mb-3"><strong>Why it feels like Stripe:</strong> Extremely intuitive modern dashboards, neat API structures, and built-in "Tap Bill" payment link creation to send on WhatsApp/SMS instantly.</p>
+                        <p class="text-emerald-600 text-xs font-semibold"><i class="fa-solid fa-shield-halved mr-1"></i> Best for quick startup onboarding and social commerce.</p>
+                    </div>
+
+                    <!-- HyperPay -->
+                    <div class="bg-white p-6 rounded-2xl border-l-4 border-amber-500 shadow-sm hover:shadow-md transition-all duration-300">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-bold text-slate-900">4. HyperPay</h3>
+                            <span class="bg-amber-50 text-amber-700 text-xs font-semibold px-3 py-1 rounded-full">Enterprise & Scale</span>
+                        </div>
+                        <p class="text-slate-600 text-xs mb-3 font-semibold">Payment Methods: Full suite, including deep wallet integrations and native mada routing.</p>
+                        <p class="text-slate-600 text-xs mb-3"><strong>Why it feels like Stripe:</strong> Custom-tailored transaction rates for high volume, next-day T+1 corporate settlements, and deep local banking ties that maximize approval rates.</p>
+                        <p class="text-emerald-600 text-xs font-semibold"><i class="fa-solid fa-circle-check mr-1"></i> Highest mada transaction approval rates (frequently &gt;96%).</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade">
+                    <div class="lg:col-span-2 overflow-hidden bg-white rounded-2xl border border-slate-100 shadow-sm">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-900 text-white">
+                                    <th class="p-3 font-bold">Gateway</th>
+                                    <th class="p-3 font-bold">Core Strength</th>
+                                    <th class="p-3 font-bold">Ideal Project Type</th>
+                                    <th class="p-3 font-bold">Developer Experience</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-slate-700">
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="p-3 font-semibold text-slate-900">Moyasar</td>
+                                    <td class="p-3">Cleanest APIs & SDKs</td>
+                                    <td class="p-3">Custom Apps, SaaS, Subscriptions</td>
+                                    <td class="p-3 text-blue-600 font-semibold">Excellent (Very Stripe-like)</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="p-3 font-semibold text-slate-900">PayTabs</td>
+                                    <td class="p-3">Split payments & regional plugins</td>
+                                    <td class="p-3">E-commerce Marketplaces</td>
+                                    <td class="p-3 text-emerald-600 font-semibold">Great (Connect features)</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="p-3 font-semibold text-slate-900">Tap Payments</td>
+                                    <td class="p-3">No-code tools & fast setup</td>
+                                    <td class="p-3">B2C, Startups, Social Commerce</td>
+                                    <td class="p-3 text-purple-600 font-semibold">Good (Fast Onboarding)</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="p-3 font-semibold text-slate-900">HyperPay</td>
+                                    <td class="p-3">Enterprise processing power</td>
+                                    <td class="p-3">High-volume apps, Corporate</td>
+                                    <td class="p-3 text-amber-600 font-semibold">Robust / Corporate APIs</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="bg-slate-900 text-white p-6 rounded-2xl border border-slate-800 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <h4 class="text-sm font-bold text-blue-400 mb-3"><i class="fa-solid fa-clipboard-check mr-2"></i>Technical Checklist</h4>
+                            <ul class="space-y-2 text-[11px] text-slate-300">
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-circle-check text-blue-400 mt-0.5 mr-2"></i>
+                                    <span><strong>mada Native Integration:</strong> Absolute requirement to process KSA's primary debit scheme.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-circle-check text-blue-400 mt-0.5 mr-2"></i>
+                                    <span><strong>Commercial Registration (CR):</strong> Required to activate and receive corporate payouts.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-circle-check text-blue-400 mt-0.5 mr-2"></i>
+                                    <span><strong>ZATCA Compliance:</strong> E-commerce checkout must integrate with local e-invoicing layers.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 8: Roadmap Part 1 -->
+        <section class="slide bg-slate-50" id="slide-8-en">
+            <div class="max-w-5xl mx-auto w-full">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-sm">Execution Timeline Part 1</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-12 animate-fade mt-2">Months 1-2: Foundation & Unification</h2>
+                
+                <div class="space-y-6">
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 animate-fade flex flex-col md:flex-row gap-6 items-start">
+                        <div class="bg-blue-100 text-blue-700 font-bold px-4 py-2 rounded-lg whitespace-nowrap">Weeks 1-4</div>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold mb-3">Infrastructure & Data Migration</h3>
+                            <p class="text-slate-600 mb-4 text-sm">Setting up the core environment and safely porting historical patient data without downtime.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-700">
+                                <div><i class="fa-solid fa-circle-check text-blue-500 mr-2"></i> Deploy local Saudi Cloud environments</div>
+                                <div><i class="fa-solid fa-circle-check text-blue-500 mr-2"></i> Database schema modeling (Prisma)</div>
+                                <div><i class="fa-solid fa-circle-check text-blue-500 mr-2"></i> Setup NCA ECC-compliant audit logs</div>
+                                <div><i class="fa-solid fa-circle-check text-blue-500 mr-2"></i> Initial CRM data mapping & import</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 animate-fade flex flex-col md:flex-row gap-6 items-start" style="animation-delay: 0.1s">
+                        <div class="bg-blue-100 text-blue-700 font-bold px-4 py-2 rounded-lg whitespace-nowrap">Weeks 5-8</div>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold mb-3">Communications & Booking Hub</h3>
+                            <p class="text-slate-600 mb-4 text-sm">Centralizing all incoming lead sources into a single, unified inbox accessible by the team.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-700">
+                                <div><i class="fa-solid fa-circle-check text-blue-500 mr-2"></i> WhatsApp Business API integration</div>
+                                <div><i class="fa-solid fa-circle-check text-blue-500 mr-2"></i> Local SMS / Voice Providers</div>
+                                <div><i class="fa-solid fa-circle-check text-blue-500 mr-2"></i> Meta Graph API (FB/IG DMs)</div>
+                                <div><i class="fa-solid fa-circle-check text-blue-500 mr-2"></i> 2-way Google Calendar syncing</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 9: Roadmap Part 2 -->
+        <section class="slide bg-white" id="slide-9-en">
+            <div class="max-w-5xl mx-auto w-full">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-sm">Execution Timeline Part 2</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-12 animate-fade mt-2">Months 3+: Automation & Intelligence</h2>
+                
+                <div class="space-y-6">
+                    <div class="bg-slate-50 p-8 rounded-2xl shadow-sm border border-slate-200 animate-fade flex flex-col md:flex-row gap-6 items-start">
+                        <div class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-lg whitespace-nowrap">Weeks 9-12</div>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold mb-3">Smart Automations</h3>
+                            <p class="text-slate-600 mb-4 text-sm">Replacing manual staff work with triggered workflows and self-serve patient portals.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-700">
+                                <div><i class="fa-solid fa-gear text-purple-500 mr-2"></i> Make.com/n8n webhook orchestrations</div>
+                                <div><i class="fa-solid fa-gear text-purple-500 mr-2"></i> Staff Slack notifications hookup</div>
+                                <div><i class="fa-solid fa-gear text-purple-500 mr-2"></i> Automated No-Show reactivation flows</div>
+                                <div><i class="fa-solid fa-gear text-purple-500 mr-2"></i> Moyasar / PayTabs integrations</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-900 text-white p-8 rounded-2xl shadow-xl border border-slate-800 animate-fade flex flex-col md:flex-row gap-6 items-start" style="animation-delay: 0.1s">
+                        <div class="bg-emerald-900 text-emerald-400 border border-emerald-800 font-bold px-4 py-2 rounded-lg whitespace-nowrap">Weeks 13+</div>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold mb-3">Custom AI Agent Deployment</h3>
+                            <p class="text-slate-400 mb-4 text-sm">Training language models on historical clinic data to handle tier-1 patient inquiries autonomously.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-300">
+                                <div><i class="fa-solid fa-robot text-emerald-500 mr-2"></i> OpenAI API vector embeddings</div>
+                                <div><i class="fa-solid fa-robot text-emerald-500 mr-2"></i> FAQ & objection handling training</div>
+                                <div><i class="fa-solid fa-robot text-emerald-500 mr-2"></i> Human-handoff fallback protocols</div>
+                                <div><i class="fa-solid fa-robot text-emerald-500 mr-2"></i> Sentiment analysis dashboard</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 10: Visual Roadmap -->
+        <section class="slide bg-slate-950 text-white relative overflow-hidden" id="slide-10-en" style="padding-top: 1.5rem; padding-bottom: 1.5rem;">
+            <!-- Background Glows -->
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+            <div class="max-w-6xl w-full mx-auto flex flex-col justify-center relative z-10">
+                <!-- Slide Header -->
+                <div class="text-center mb-4 animate-fade">
+                    <span class="text-blue-500 font-extrabold tracking-widest uppercase text-sm">Product Roadmap</span>
+                    <h2 class="text-4xl md:text-5xl font-black mt-2 tracking-wide font-serif-royal">Execution Timeline Visualized</h2>
+                    <div class="w-16 h-[2px] bg-gradient-to-r from-blue-500 via-purple-500 to-amber-500 mx-auto mt-4"></div>
+                </div>
+
+                <!-- Winding Horizontal Timeline (Desktop) -->
+                <div class="hidden lg:block relative w-full h-[320px] mt-2">
+                    <!-- SVG Winding Road Backdrop -->
+                    <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 1000 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Glow Backdrop Path -->
+                        <path d="M 0,160 C 50,160 75,200 125,200 C 200,200 300,120 375,120 C 450,120 550,200 625,200 C 700,200 800,120 875,120 C 925,120 950,160 1000,160" 
+                               stroke="url(#roadGlow)" stroke-width="24" stroke-linecap="round" opacity="0.15" />
+                        
+                        <!-- Neon Road Edge Borders -->
+                        <path d="M 0,160 C 50,160 75,200 125,200 C 200,200 300,120 375,120 C 450,120 550,200 625,200 C 700,200 800,120 875,120 C 925,120 950,160 1000,160" 
+                               stroke="url(#roadEdge)" stroke-width="14" stroke-linecap="round" opacity="0.7" style="mix-blend-mode: screen;" />
+
+                        <!-- Main Road Bed -->
+                        <path d="M 0,160 C 50,160 75,200 125,200 C 200,200 300,120 375,120 C 450,120 550,200 625,200 C 700,200 800,120 875,120 C 925,120 950,160 1000,160" 
+                               stroke="#020617" stroke-width="10" stroke-linecap="round" />
+
+                        <!-- Dashed Center Divider Line -->
+                        <path d="M 0,160 C 50,160 75,200 125,200 C 200,200 300,120 375,120 C 450,120 550,200 625,200 C 700,200 800,120 875,120 C 925,120 950,160 1000,160" 
+                               stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="6,6" />
+
+                        <!-- Gradients Definitions -->
+                        <defs>
+                            <linearGradient id="roadGlow" x1="0" y1="160" x2="1000" y2="160" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#3b82f6" />
+                                <stop offset="33%" stop-color="#10b981" />
+                                <stop offset="66%" stop-color="#8b5cf6" />
+                                <stop offset="100%" stop-color="#f59e0b" />
+                            </linearGradient>
+                            <linearGradient id="roadEdge" x1="0" y1="160" x2="1000" y2="160" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#3b82f6" />
+                                <stop offset="33%" stop-color="#10b981" />
+                                <stop offset="66%" stop-color="#8b5cf6" />
+                                <stop offset="100%" stop-color="#f59e0b" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+
+                    <!-- Milestone Pins Overlay -->
+                    <!-- Pin 1: June (Blue) -->
+                    <div class="absolute left-[12.5%] top-[62.5%] -translate-x-1/2 -translate-y-1/2 z-20">
+                        <div class="w-6 h-6 rounded-full bg-slate-950 border-4 border-blue-500 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)] hover:scale-125 transition-transform duration-300">
+                            <div class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
+                        </div>
+                    </div>
+                    <!-- Pin 2: July (Emerald) -->
+                    <div class="absolute left-[37.5%] top-[37.5%] -translate-x-1/2 -translate-y-1/2 z-20">
+                        <div class="w-6 h-6 rounded-full bg-slate-950 border-4 border-emerald-500 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.5)] hover:scale-125 transition-transform duration-300">
+                            <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                        </div>
+                    </div>
+                    <!-- Pin 3: August (Purple) -->
+                    <div class="absolute left-[62.5%] top-[62.5%] -translate-x-1/2 -translate-y-1/2 z-20">
+                        <div class="w-6 h-6 rounded-full bg-slate-950 border-4 border-purple-500 flex items-center justify-center shadow-[0_0_15px_rgba(139,92,246,0.5)] hover:scale-125 transition-transform duration-300">
+                            <div class="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse"></div>
+                        </div>
+                    </div>
+                    <!-- Pin 4: September+ (Amber) -->
+                    <div class="absolute left-[87.5%] top-[37.5%] -translate-x-1/2 -translate-y-1/2 z-20">
+                        <div class="w-6 h-6 rounded-full bg-slate-950 border-4 border-amber-500 flex items-center justify-center shadow-[0_0_15px_rgba(245,158,11,0.5)] hover:scale-125 transition-transform duration-300">
+                            <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
+                        </div>
+                    </div>
+
+                    <!-- Cards Layout (Overlay on Grid) -->
+                    <div class="grid grid-cols-4 gap-8 w-full h-full relative z-10">
+                        <!-- Column 1: June (Top Card) -->
+                        <div class="flex flex-col items-center justify-start h-full">
+                            <div class="h-[200px] flex flex-col justify-start items-center w-full">
+                                <div class="glass-card border border-blue-500/20 hover:border-blue-500/50 rounded-2xl p-4 w-full transition-all duration-500 hover:shadow-[0_0_20px_rgba(59,130,246,0.15)] flex-shrink-0">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-blue-400 font-bold text-[10px] uppercase tracking-wider">June (Weeks 1-4)</span>
+                                        <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400">
+                                            <i class="fa-solid fa-server text-xs"></i>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-base font-bold text-white mb-1.5">Foundation</h3>
+                                    <ul class="space-y-1 text-[11px] leading-tight text-slate-300">
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-blue-500 mt-0.5 shrink-0 text-[10px]"></i>
+                                            <span>Local Saudi Cloud setup</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-blue-500 mt-0.5 shrink-0 text-[10px]"></i>
+                                            <span>Database schema modeling</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-blue-500 mt-0.5 shrink-0 text-[10px]"></i>
+                                            <span>NCA ECC audit logs</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-blue-500 mt-0.5 shrink-0 text-[10px]"></i>
+                                            <span>CRM data mapping & import</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!-- Dashed connector going down -->
+                                <div class="w-[2px] flex-grow border-l-2 border-dashed border-blue-500/30"></div>
+                            </div>
+                        </div>
+
+                        <!-- Column 2: July (Bottom Card) -->
+                        <div class="flex flex-col items-center justify-end h-full">
+                            <div class="h-[200px] flex flex-col justify-end items-center w-full">
+                                <!-- Dashed connector going up -->
+                                <div class="w-[2px] flex-grow border-l-2 border-dashed border-emerald-500/30"></div>
+                                <div class="glass-card border border-emerald-500/20 hover:border-emerald-500/50 rounded-2xl p-4 w-full transition-all duration-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.15)] flex-shrink-0">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-emerald-400 font-bold text-[10px] uppercase tracking-wider">July (Weeks 5-8)</span>
+                                        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                                            <i class="fa-solid fa-comments text-xs"></i>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-base font-bold text-white mb-1.5">Communications</h3>
+                                    <ul class="space-y-1 text-[11px] leading-tight text-slate-300">
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 shrink-0 text-[10px]"></i>
+                                            <span>WhatsApp Business API</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 shrink-0 text-[10px]"></i>
+                                            <span>Local SMS / Voice Providers</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 shrink-0 text-[10px]"></i>
+                                            <span>Meta Graph API (FB/IG)</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 shrink-0 text-[10px]"></i>
+                                            <span>2-way Calendar sync</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Column 3: August (Top Card) -->
+                        <div class="flex flex-col items-center justify-start h-full">
+                            <div class="h-[200px] flex flex-col justify-start items-center w-full">
+                                <div class="glass-card border border-purple-500/20 hover:border-purple-500/50 rounded-2xl p-4 w-full transition-all duration-500 hover:shadow-[0_0_20px_rgba(139,92,246,0.15)] flex-shrink-0">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-purple-400 font-bold text-[10px] uppercase tracking-wider">August (Weeks 9-12)</span>
+                                        <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400">
+                                            <i class="fa-solid fa-gears text-xs"></i>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-base font-bold text-white mb-1.5">Automation</h3>
+                                    <ul class="space-y-1 text-[11px] leading-tight text-slate-300">
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-purple-500 mt-0.5 shrink-0 text-[10px]"></i>
+                                            <span>Make.com/n8n webhooks</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-purple-500 mt-0.5 shrink-0 text-[10px]"></i>
+                                            <span>Staff Slack integrations</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-purple-500 mt-0.5 shrink-0 text-[10px]"></i>
+                                            <span>No-Show reactivations</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-purple-500 mt-0.5 shrink-0 text-[10px]"></i>
+                                            <span>Saudi payment gateways</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!-- Dashed connector going down -->
+                                <div class="w-[2px] flex-grow border-l-2 border-dashed border-purple-500/30"></div>
+                            </div>
+                        </div>
+
+                        <!-- Column 4: September+ (Bottom Card) -->
+                        <div class="flex flex-col items-center justify-end h-full">
+                            <div class="h-[200px] flex flex-col justify-end items-center w-full">
+                                <!-- Dashed connector going up -->
+                                <div class="w-[2px] flex-grow border-l-2 border-dashed border-amber-500/30"></div>
+                                <div class="glass-card border border-amber-500/20 hover:border-amber-500/50 rounded-2xl p-4 w-full transition-all duration-500 hover:shadow-[0_0_20px_rgba(245,158,11,0.15)] flex-shrink-0">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-amber-400 font-bold text-[10px] uppercase tracking-wider">September+ (Weeks 13+)</span>
+                                        <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400">
+                                            <i class="fa-solid fa-brain text-xs"></i>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-base font-bold text-white mb-1.5">Intelligence</h3>
+                                    <ul class="space-y-1 text-[11px] leading-tight text-slate-300">
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-amber-500 mt-0.5 shrink-0 text-[10px]"></i>
+                                            <span>OpenAI vector embeddings</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-amber-500 mt-0.5 shrink-0 text-[10px]"></i>
+                                            <span>FAQ & objection handling</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-amber-500 mt-0.5 shrink-0 text-[10px]"></i>
+                                            <span>Human-handoff fallback</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-amber-500 mt-0.5 shrink-0 text-[10px]"></i>
+                                            <span>Sentiment analysis dashboard</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>   </div>
+
+                <!-- Fallback Vertical Layout for Mobile/Tablet (English) -->
+                <div class="lg:hidden flex flex-col relative border-l-2 border-dashed border-slate-700/50 pl-6 ml-4 space-y-8 py-2 text-left">
+                    <!-- Mobile Phase 1 -->
+                    <div class="relative">
+                        <div class="absolute -left-[33px] top-1.5 w-4 h-4 rounded-full bg-slate-950 border-2 border-blue-500 flex items-center justify-center">
+                            <div class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
+                        </div>
+                        <div class="glass-card border border-blue-500/20 rounded-2xl p-5">
+                            <span class="text-blue-400 font-bold text-xs uppercase tracking-wider block mb-2">June (Weeks 1-4)</span>
+                            <h3 class="text-lg font-bold text-white mb-2">Foundation</h3>
+                            <ul class="space-y-1.5 text-xs text-slate-300">
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-blue-500 mt-0.5 shrink-0"></i>
+                                    <span>Local Saudi Cloud setup</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-blue-500 mt-0.5 shrink-0"></i>
+                                    <span>Database schema modeling</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-blue-500 mt-0.5 shrink-0"></i>
+                                    <span>NCA ECC audit logs</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Phase 2 -->
+                    <div class="relative">
+                        <div class="absolute -left-[33px] top-1.5 w-4 h-4 rounded-full bg-slate-950 border-2 border-emerald-500 flex items-center justify-center">
+                            <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                        </div>
+                        <div class="glass-card border border-emerald-500/20 rounded-2xl p-5">
+                            <span class="text-emerald-400 font-bold text-xs uppercase tracking-wider block mb-2">July (Weeks 5-8)</span>
+                            <h3 class="text-lg font-bold text-white mb-2">Communications</h3>
+                            <ul class="space-y-1.5 text-xs text-slate-300">
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 shrink-0"></i>
+                                    <span>WhatsApp Business API</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 shrink-0"></i>
+                                    <span>Local SMS / Voice Providers</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 shrink-0"></i>
+                                    <span>Meta Graph API (FB/IG)</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Phase 3 -->
+                    <div class="relative">
+                        <div class="absolute -left-[33px] top-1.5 w-4 h-4 rounded-full bg-slate-950 border-2 border-purple-500 flex items-center justify-center">
+                            <div class="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse"></div>
+                        </div>
+                        <div class="glass-card border border-purple-500/20 rounded-2xl p-5">
+                            <span class="text-purple-400 font-bold text-xs uppercase tracking-wider block mb-2">August (Weeks 9-12)</span>
+                            <h3 class="text-lg font-bold text-white mb-2">Automation</h3>
+                            <ul class="space-y-1.5 text-xs text-slate-300">
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-purple-500 mt-0.5 shrink-0"></i>
+                                    <span>Make.com/n8n webhooks</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-purple-500 mt-0.5 shrink-0"></i>
+                                    <span>Staff Slack integrations</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-purple-500 mt-0.5 shrink-0"></i>
+                                    <span>Saudi payment gateways</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Phase 4 -->
+                    <div class="relative">
+                        <div class="absolute -left-[33px] top-1.5 w-4 h-4 rounded-full bg-slate-950 border-2 border-amber-500 flex items-center justify-center">
+                            <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
+                        </div>
+                        <div class="glass-card border border-amber-500/20 rounded-2xl p-5">
+                            <span class="text-amber-400 font-bold text-xs uppercase tracking-wider block mb-2">September+ (Weeks 13+)</span>
+                            <h3 class="text-lg font-bold text-white mb-2">Intelligence</h3>
+                            <ul class="space-y-1.5 text-xs text-slate-300">
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-amber-500 mt-0.5 shrink-0"></i>
+                                    <span>OpenAI vector embeddings</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-amber-500 mt-0.5 shrink-0"></i>
+                                    <span>FAQ & objection handling</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-amber-500 mt-0.5 shrink-0"></i>
+                                    <span>Sentiment analysis dashboard</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 11: ROI Impact -->
+        <section class="slide bg-slate-50" id="slide-11-en">
+            <h2 class="text-4xl font-bold mb-16 animate-fade">The 50x ROI Impact</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="p-8 border-t-4 border-blue-500 bg-white rounded-xl shadow-sm animate-fade">
+                    <div class="text-5xl font-extrabold text-slate-900 mb-4">+40%</div>
+                    <h3 class="text-xl font-bold mb-2">Lead Conversion</h3>
+                    <p class="text-slate-600 text-sm">By engaging leads within 5 minutes via AI and omni-channel messaging.</p>
+                </div>
+                <div class="p-8 border-t-4 border-emerald-500 bg-white rounded-xl shadow-sm animate-fade" style="animation-delay: 0.1s">
+                    <div class="text-5xl font-extrabold text-slate-900 mb-4">-60%</div>
+                    <h3 class="text-xl font-bold mb-2">No-Show Rate</h3>
+                    <p class="text-slate-600 text-sm">Through intelligent automated reminders and easy rescheduling flows.</p>
+                </div>
+                <div class="p-8 border-t-4 border-purple-500 bg-white rounded-xl shadow-sm animate-fade" style="animation-delay: 0.2s">
+                    <div class="text-5xl font-extrabold text-slate-900 mb-4">24/7</div>
+                    <h3 class="text-xl font-bold mb-2">Operational Hours</h3>
+                    <p class="text-slate-600 text-sm">AI handling patient inquiries and bookings around the clock without extra staff.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 12: Next Steps -->
+        <section class="slide bg-white" id="slide-12-en">
+            <div class="animate-fade max-w-4xl text-center mx-auto">
+                <h2 class="text-6xl font-extrabold text-slate-900 mb-8">Ready to Scale <span class="text-blue-600">50x?</span></h2>
+                <p class="text-xl text-slate-600 mb-12">Let's eliminate the chaos and build your growth engine today.</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="Technical_DeepDive_Flyer.pdf" download class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded font-bold transition">Download Technical Flyer</a>
+                </div>
+                <div class="mt-16 text-slate-500">
+                    <p>Questions? Contact us at <a href="mailto:info@arabiaintelligence.com" class="text-blue-600 font-semibold hover:underline">info@arabiaintelligence.com</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 13: Acronyms & Glossary -->
+        <section class="slide bg-slate-900 text-white" id="slide-13-en">
+            <div class="max-w-6xl w-full mx-auto">
+                <span class="text-blue-400 font-bold tracking-widest uppercase text-sm">Reference Appendix</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-10 animate-fade mt-2">Glossary of Acronyms</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade">
+                    <div class="bg-slate-800/60 p-6 rounded-2xl border border-slate-700/60">
+                        <span class="text-blue-400 font-bold text-xs uppercase tracking-wider block mb-2">Saudi Regulatory Bodies</span>
+                        <ul class="space-y-3">
+                            <li>
+                                <strong class="text-white block text-sm">SDAIA</strong>
+                                <span class="text-slate-400 text-xs">Saudi Data & AI Authority. The national regulator overseeing data protection and artificial intelligence policies in KSA.</span>
+                            </li>
+                            <li>
+                                <strong class="text-white block text-sm">NCA</strong>
+                                <span class="text-slate-400 text-xs">National Cybersecurity Authority. The government entity responsible for setting and monitoring cybersecurity standards in KSA.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-800/60 p-6 rounded-2xl border border-slate-700/60">
+                        <span class="text-emerald-400 font-bold text-xs uppercase tracking-wider block mb-2">Compliance & Privacy</span>
+                        <ul class="space-y-3">
+                            <li>
+                                <strong class="text-white block text-sm">PDPL</strong>
+                                <span class="text-slate-400 text-xs">Personal Data Protection Law. The primary legislative framework governing the processing and protection of personal data in Saudi Arabia.</span>
+                            </li>
+                            <li>
+                                <strong class="text-white block text-sm">ECC</strong>
+                                <span class="text-slate-400 text-xs">Essential Cybersecurity Controls. The baseline cybersecurity requirements issued by the NCA for local organizations.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-800/60 p-6 rounded-2xl border border-slate-700/60">
+                        <span class="text-purple-400 font-bold text-xs uppercase tracking-wider block mb-2">Technical & Architecture</span>
+                        <ul class="space-y-3">
+                            <li>
+                                <strong class="text-white block text-sm">SSR</strong>
+                                <span class="text-slate-400 text-xs">Server-Side Rendering. A Next.js mechanism that builds HTML pages on the server to deliver instant load speeds.</span>
+                            </li>
+                            <li>
+                                <strong class="text-white block text-sm">WAF & DDoS</strong>
+                                <span class="text-slate-400 text-xs">Web Application Firewall & Distributed Denial of Service. Security layers that block malicious traffic and prevent system overload.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-800/60 p-6 rounded-2xl border border-slate-700/60">
+                        <span class="text-amber-400 font-bold text-xs uppercase tracking-wider block mb-2">Operations & EMR</span>
+                        <ul class="space-y-3">
+                            <li>
+                                <strong class="text-white block text-sm">CRM</strong>
+                                <span class="text-slate-400 text-xs">Customer Relationship Management. Platform designed to manage clinical communication, funnel conversions, and patient operations.</span>
+                            </li>
+                            <li>
+                                <strong class="text-white block text-sm">EHR / EMR</strong>
+                                <span class="text-slate-400 text-xs">Electronic Health Record / Electronic Medical Record. Standardized digital platforms used for clinical patient histories.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-800/60 p-6 rounded-2xl border border-slate-700/60">
+                        <span class="text-pink-400 font-bold text-xs uppercase tracking-wider block mb-2">Security & Data Types</span>
+                        <ul class="space-y-3">
+                            <li>
+                                <strong class="text-white block text-sm">PII</strong>
+                                <span class="text-slate-400 text-xs">Personally Identifiable Information. Any patient data that can be used to identify them specifically (such as national ID or phone number).</span>
+                            </li>
+                            <li>
+                                <strong class="text-white block text-sm">AES-256</strong>
+                                <span class="text-slate-400 text-xs">Advanced Encryption Standard. A military-grade algorithm used to encrypt database records at-rest and in-transit.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-800/60 p-6 rounded-2xl border border-slate-700/60">
+                        <span class="text-cyan-400 font-bold text-xs uppercase tracking-wider block mb-2">Metrics & Integrations</span>
+                        <ul class="space-y-3">
+                            <li>
+                                <strong class="text-white block text-sm">API</strong>
+                                <span class="text-slate-400 text-xs">Application Programming Interface. Protocol that allows different software tools (like EMR and ClinicFlow) to exchange data.</span>
+                            </li>
+                            <li>
+                                <strong class="text-white block text-sm">ROI</strong>
+                                <span class="text-slate-400 text-xs">Return on Investment. Metric demonstrating the financial recovery relative to the capital investment made.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SAUDI ARABIC VERSION SLIDES                  -->
+    <!-- ============================================ -->
+    <div id="presentation-ar" class="lang-section" style="display: none;" dir="rtl">
+        
+        <!-- Slide 1: Hero (Arabic) -->
+        <section class="slide bg-white" id="slide-1-ar">
+    <div class="flex justify-start items-center max-w-4xl mx-auto gap-8">
+        <div class="flex-1">
+            <span class="text-blue-600 font-bold tracking-widest uppercase text-sm">حزمة نمو المؤسسات</span>
+            <h1 class="text-6xl md:text-7xl font-extrabold text-slate-900 mt-4 mb-6 leading-tight">محرك نمو العيادات <br><span class="text-blue-600">الموحد</span></h1>
+            <p class="text-xl text-slate-600 mb-10 max-w-2xl">ضاعف نموك 50 ضعفاً من خلال القضاء على الفوضى. نظام متوافق تماماً مع رؤية السعودية 2030، وضوابط الهيئة الوطنية للأمن السيبراني (NCA ECC)، ولوائح الهيئة السعودية للبيانات والذكاء الاصطناعي (SDAIA PDPL) لتوسيع المبيعات والتسويق والعمليات بشكل آمن.</p>
+        </div>
+        <div class="flex-shrink-0" style="width: 30rem;">
+            <img src="media/Grow50x_v1.png" alt="Grow50x" width="100%" style="border-radius: 0.5rem; box-shadow: 0 10px 15px rgba(0,0,0,0.1); transform: scaleX(-1);">
+        </div>
+    </div>
+</section>
+
+        <!-- Slide 2: Frontend & Edge Architecture (Arabic) -->
+        <section class="slide bg-gradient-mesh" id="slide-2-ar">
+            <div class="max-w-6xl w-full mx-auto">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-sm">البنية التقنية - الجزء الأول</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-8 animate-fade mt-2">البنية التحتية للواجهة الأمامية والشبكة الطرفية</h2>
+                
+                <div class="overflow-hidden bg-white rounded-3xl border border-slate-100 shadow-xl animate-fade">
+                    <table class="w-full text-right border-collapse">
+                        <thead>
+                            <tr class="bg-slate-900 text-white">
+                                <th class="p-6 font-bold text-lg w-1/2"><i class="fa-brands fa-react ml-2 text-blue-400"></i>الواجهة الأمامية وموجّه التطبيقات (Next.js 14)</th>
+                                <th class="p-6 font-bold text-lg w-1/2"><i class="fa-solid fa-network-wired ml-2 text-emerald-400"></i>البنية التحتية الطرفية داخل المملكة</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="p-8">
+                                    <div class="flex items-start">
+                                        <i class="fa-solid fa-bolt text-amber-500 mt-1 ml-4 text-xl"></i>
+                                        <div>
+                                            <h4 class="font-bold text-slate-900 text-lg mb-1">عرض الصفحات من جانب الخادم (SSR)</h4>
+                                            <p class="text-slate-600 text-sm">تحميل أولي فائق السرعة للصفحات، وهو أمر بالغ الأهمية لتحويل قنوات البيع وتحسين محركات البحث المحلية (SEO).</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-8">
+                                    <div class="flex items-start">
+                                        <i class="fa-solid fa-globe text-blue-500 mt-1 ml-4 text-xl"></i>
+                                        <div>
+                                            <h4 class="font-bold text-slate-900 text-lg mb-1">العقد الطرفية المحلية</h4>
+                                            <p class="text-slate-600 text-sm">تحسين توجيه المحتوى عبر خوادم طرفية في الرياض وجدة لضمان الامتثال وزمن استجابة محلي يقل عن 30 مللي ثانية.</p>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="p-8">
+                                    <div class="flex items-start">
+                                        <i class="fa-solid fa-mobile-screen-button text-blue-500 mt-1 ml-4 text-xl"></i>
+                                        <div>
+                                            <h4 class="font-bold text-slate-900 text-lg mb-1">لوحات تحكم مستجيبة</h4>
+                                            <p class="text-slate-600 text-sm">إدارة حالات واجهة المستخدم المعقدة والمرنة بسلاسة عبر أجهزة الكمبيوتر والهواتف المحمولة.</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-8">
+                                    <div class="flex items-start">
+                                        <i class="fa-solid fa-shield text-emerald-500 mt-1 ml-4 text-xl"></i>
+                                        <div>
+                                            <h4 class="font-bold text-slate-900 text-lg mb-1">جدار حماية تطبيقات المؤسسات (WAF) والحماية من هجمات حجب الخدمة (DDoS)</h4>
+                                            <p class="text-slate-600 text-sm">متوافق تماماً مع متطلبات الهيئة الوطنية للأمن السيبراني (NCA ECC) لحماية بيئات بيانات الصحة الوطنية.</p>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="p-8">
+                                    <div class="flex items-start">
+                                        <i class="fa-solid fa-code text-purple-500 mt-1 ml-4 text-xl"></i>
+                                        <div>
+                                            <h4 class="font-bold text-slate-900 text-lg mb-1 font-mono">TypeScript Driven</h4>
+                                            <p class="text-slate-600 text-sm">أمان كتابة الأكواد من البداية إلى النهاية مما يقضي على أخطاء التشغيل قبل نشر النظام في البيئة الفعلية.</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-8">
+                                    <div class="flex items-start">
+                                        <i class="fa-solid fa-image text-amber-500 mt-1 ml-4 text-xl"></i>
+                                        <div>
+                                            <h4 class="font-bold text-slate-900 text-lg mb-1">توطين البيانات</h4>
+                                            <p class="text-slate-600 text-sm">ضوابط توجيه على مستوى الشبكة الطرفية تضمن عدم تجاوز حركة بيانات المرضى لجدران الحماية التنظيمية المحلية.</p>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: Backend & Database (Arabic) -->
+        <section class="slide bg-slate-900 text-white" id="slide-3-ar">
+            <div class="max-w-6xl w-full mx-auto">
+                <span class="text-blue-400 font-bold tracking-widest uppercase text-sm">البنية التقنية - الجزء الثاني</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-12 animate-fade mt-2">المحرك الأساسي والأمن</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-slate-800 p-8 rounded-3xl border border-slate-700 shadow-xl animate-fade">
+                        <i class="fa-brands fa-node-js text-5xl text-emerald-500 mb-6"></i>
+                        <h3 class="text-xl font-bold mb-4">الخدمات المصغرة بلغة Node.js</h3>
+                        <p class="text-slate-300 text-sm mb-4">بنية قائمة على الأحداث تم إنشاؤها للتعامل مع آلاف طلبات الويب الفورية (Webhooks)، وطلبات الذكاء الاصطناعي، والرسائل النصية المتزامنة دون توقف.</p>
+                        <div class="bg-slate-900 rounded-lg p-3 text-xs text-emerald-400 font-mono" dir="ltr">
+                            &gt; Scalable cluster processing<br>
+                            &gt; Redis caching layers<br>
+                            &gt; BullMQ job queues
+                        </div>
+                    </div>
+                    <div class="bg-slate-800 p-8 rounded-3xl border border-slate-700 shadow-xl animate-fade" style="animation-delay: 0.1s">
+                        <i class="fa-solid fa-database text-5xl text-blue-500 mb-6"></i>
+                        <h3 class="text-xl font-bold mb-4">تعدد المستأجرين داخل المملكة</h3>
+                        <p class="text-slate-300 text-sm mb-4 font-semibold">عزل مخطط قاعدة البيانات متعدد المستأجرين عبر PostgreSQL، مع استضافة جميع البيانات بشكل صارم داخل المملكة (امتثال ضوابط الأمن السيبراني NCA ECC-4.2).</p>
+                        <div class="bg-slate-900 rounded-lg p-3 text-xs text-blue-400 font-mono" dir="ltr">
+                            &gt; Local data residency<br>
+                            &gt; Mathematical isolation<br>
+                            &gt; In-Kingdom replication
+                        </div>
+                    </div>
+                    <div class="bg-slate-800 p-8 rounded-3xl border border-slate-700 shadow-xl animate-fade" style="animation-delay: 0.2s">
+                        <i class="fa-solid fa-lock text-5xl text-purple-500 mb-6"></i>
+                        <h3 class="text-xl font-bold mb-4">ضوابط الأمن وحماية البيانات</h3>
+                        <p class="text-slate-300 text-sm mb-4">متوافق مع نظام حماية البيانات الشخصية (PDPL) وضوابط الهيئة الوطنية للأمن السيبراني. يقيّد الوصول إلى البيانات الصحية وفقاً للمادة 23 من نظام حماية البيانات.</p>
+                        <div class="bg-slate-900 rounded-lg p-3 text-xs text-purple-400 font-mono" dir="ltr">
+                            &gt; SDAIA PDPL compliant<br>
+                            &gt; NCA ECC-1:2018 controls<br>
+                            &gt; Strict health data access
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3.5: System Architecture (Arabic) -->
+        <section class="slide bg-slate-50 flex flex-col justify-center" id="slide-3-5-ar">
+            <div class="max-w-6xl w-full mx-auto flex flex-col items-center text-center">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-sm mb-2">هيكلية النظام</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-8 animate-fade">تدفق النظام متعدد المستأجرين</h2>
+                <div class="w-full bg-white p-4 rounded-3xl shadow-xl border border-slate-200 animate-fade" style="animation-delay: 0.1s;">
+                    <img src="media/architecture_v2.png" alt="Architecture Diagram" class="w-full max-h-[60vh] object-contain rounded-2xl">
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: Growth Features (Arabic) -->
+        <section class="slide bg-white" id="slide-4-ar">
+            <h2 class="text-4xl font-bold mb-16 animate-fade">حزمة النمو الكاملة</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="animate-fade p-6 border border-slate-100 rounded-2xl bg-slate-50">
+                    <i class="fa-solid fa-calendar-check text-blue-600 text-3xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">الحجز الذكي والموافقة على نظام حماية البيانات الشخصية</h3>
+                    <p class="text-slate-600 mb-3 text-sm italic">"يرجى مراجعة وتأكيد موافقتك على معالجة البيانات. تم جدولة موعدك بنجاح!"</p>
+                    <p class="text-slate-700 text-sm font-semibold">الفائدة: قوالب موافقة صريحة مدمجة تلبي متطلبات الهيئة السعودية للبيانات والذكاء الاصطناعي (SDAIA) تلقائياً (المادتين 5 و10).</p>
+                </div>
+                <div class="animate-fade p-6 border border-slate-100 rounded-2xl bg-slate-50">
+                    <i class="fa-solid fa-brain text-emerald-600 text-3xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">خدمة عملاء بالذكاء الاصطناعي على مدار الساعة</h3>
+                    <p class="text-slate-600 mb-3 text-sm italic">"إجابات فورية على استفسارات المرضى 24/7، دون الحاجة لزيادة عدد موظفي الفريق."</p>
+                    <p class="text-slate-700 text-sm font-semibold">الفائدة: زيادة قدرة التواصل مع المرضى بشكل لا نهائي دون زيادة الرواتب والنفقات العامة.</p>
+                </div>
+                <div class="animate-fade p-6 border border-slate-100 rounded-2xl bg-slate-50">
+                    <i class="fa-solid fa-file-invoice-dollar text-blue-600 text-3xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">الإيرادات والتقارير</h3>
+                    <p class="text-slate-600 mb-3 text-sm italic">"شاهد دخلك الفعلي وحدد أي القنوات التسويقية تحقق أفضل النتائج."</p>
+                    <p class="text-slate-700 text-sm font-semibold">الفائدة: توقف عن التخمين؛ استثمر الميزانية فقط في القنوات التسويقية التي تحقق عائداً على الاستثمار يصل إلى 50 ضعفاً.</p>
+                </div>
+                <div class="animate-fade p-6 border border-slate-100 rounded-2xl bg-slate-50">
+                    <i class="fa-solid fa-star text-amber-500 text-3xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">محرك إدارة السمعة</h3>
+                    <p class="text-slate-600 mb-3 text-sm italic">"إرسال طلبات تقييم تلقائية للعملاء الراضين في اللحظة المناسبة تماماً."</p>
+                    <p class="text-slate-700 text-sm font-semibold">الفائدة: بناء الثقة والمصداقية المؤسسية لجذب عملاء جدد بشكل طبيعي.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: Integration Ecosystem (Arabic) -->
+        <section class="slide bg-gradient-mesh" id="slide-5-ar">
+            <h2 class="text-4xl font-bold mb-12 animate-fade">منظومة تكامل سلسة</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 animate-fade">
+                    <div class="text-blue-500 text-2xl mb-4 flex gap-3">
+                        <i class="fa-brands fa-instagram"></i>
+                        <i class="fa-brands fa-facebook"></i>
+                        <i class="fa-brands fa-tiktok"></i>
+                        <i class="fa-brands fa-linkedin"></i>
+                        <i class="fa-brands fa-snapchat"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">منصات التواصل الاجتماعي</h3>
+                    <p class="text-slate-600 text-sm mb-3">إنستغرام، فيسبوك، تيك توك، لينكد إن، سناب شات، يوتيوب، إكس.</p>
+                    <p class="text-slate-500 text-xs font-medium bg-slate-50 p-2 rounded">تخطيط موحد للمحتوى وتوليد فرص العملاء عبر قنوات متعددة.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 animate-fade" style="animation-delay: 0.1s">
+                    <div class="text-emerald-500 text-2xl mb-4 flex gap-3">
+                        <i class="fa-brands fa-whatsapp"></i>
+                        <i class="fa-brands fa-slack"></i>
+                        <i class="fa-regular fa-file-excel"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">المكتب والاتصالات</h3>
+                    <p class="text-slate-600 text-sm mb-3">واتساب، سلاك، مستندات جوجل، إكسيل، تقويم جوجل.</p>
+                    <p class="text-slate-500 text-xs font-medium bg-slate-50 p-2 rounded">مزامنة الفريق الداخلي، محادثات المرضى، والجدولة الآلية.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 animate-fade" style="animation-delay: 0.2s">
+                    <div class="text-purple-500 text-2xl mb-4 flex gap-3">
+                        <i class="fa-solid fa-credit-card"></i>
+                        <i class="fa-solid fa-wallet"></i>
+                        <i class="fa-brands fa-google"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">الأعمال والويب</h3>
+                    <p class="text-slate-600 text-sm mb-3">ميسر، بي تابس، تيب بايمنتس، هايبر باي، جوجل للأعمال.</p>
+                    <p class="text-slate-500 text-xs font-medium bg-slate-50 p-2 rounded">مدفوعات محلية آمنة (مدى/آبل باي)، مسارات مضمنة، وتتبع تحسين محركات البحث المحلي.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 animate-fade" style="animation-delay: 0.3s">
+                    <div class="text-amber-500 text-2xl mb-4 flex gap-3">
+                        <i class="fa-solid fa-robot"></i>
+                        <i class="fa-solid fa-bolt"></i>
+                        <i class="fa-solid fa-network-wired"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">الذكاء الاصطناعي والأتمتة</h3>
+                    <p class="text-slate-600 text-sm mb-3">شات جي بي تي (ChatGPT)، Make، n8n.</p>
+                    <p class="text-slate-500 text-xs font-medium bg-slate-50 p-2 rounded">مسارات عمل مرئية، تنظيم البيانات، ووكلاء محادثة بالذكاء الاصطناعي على مدار الساعة.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: Social Media (Arabic) -->
+        <section class="slide bg-gradient-mesh" id="slide-6-ar">
+            <div class="max-w-6xl w-full mx-auto">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-sm">التكامل الاجتماعي</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-8 animate-fade mt-2">منصات التواصل الاجتماعي</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 animate-fade">
+                    <div class="bg-white p-6 rounded-2xl border-r-4 border-indigo-500 shadow-sm hover:shadow-md transition-all duration-300">
+                        <h3 class="text-xl font-bold text-slate-900">إنستغرام</h3>
+                        <p class="text-slate-600 text-xs mb-3">سرد القصص المرئية، القصص (Stories)، ومقاطع الريلز (Reels).</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border-r-4 border-blue-500 shadow-sm hover:shadow-md transition-all duration-300">
+                        <h3 class="text-xl font-bold text-slate-900">فيسبوك</h3>
+                        <p class="text-slate-600 text-xs mb-3">صفحات المجتمع، الإعلانات، وتطبيق ماسنجر (Messenger).</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border-r-4 border-purple-500 shadow-sm hover:shadow-md transition-all duration-300">
+                        <h3 class="text-xl font-bold text-slate-900">تيك توك</h3>
+                        <p class="text-slate-600 text-xs mb-3">التفاعل مع مقاطع الفيديو القصيرة.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border-r-4 border-green-500 shadow-sm hover:shadow-md transition-all duration-300">
+                        <h3 class="text-xl font-bold text-slate-900">لينكد إن</h3>
+                        <p class="text-slate-600 text-xs mb-3">الشبكات المهنية، ومحتوى الأعمال الموجه للشركات (B2B).</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border-r-4 border-yellow-500 shadow-sm hover:shadow-md transition-all duration-300">
+                        <h3 class="text-xl font-bold text-slate-900">يوتيوب</h3>
+                        <p class="text-slate-600 text-xs mb-3">مقاطع الفيديو الطويلة، والشروحات التعليمية.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border-r-4 border-gray-500 shadow-sm hover:shadow-md transition-all duration-300">
+                        <h3 class="text-xl font-bold text-slate-900">إكس (تويتر)</h3>
+                        <p class="text-slate-600 text-xs mb-3">التدوين المصغر، والتحديثات المباشرة في الوقت الفعلي.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: Saudi Localized Payments (Arabic) -->
+        <section class="slide bg-gradient-mesh" id="slide-7-ar">
+            <div class="max-w-6xl w-full mx-auto">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-sm">الامتثال الإقليمي والمدفوعات</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-8 animate-fade mt-2">بوابات الدفع الإلكتروني في المملكة العربية السعودية</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 animate-fade">
+                    <!-- Moyasar -->
+                    <div class="bg-white p-6 rounded-2xl border-r-4 border-blue-500 shadow-sm hover:shadow-md transition-all duration-300">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-bold text-slate-900">1. ميسر (Moyasar)</h3>
+                            <span class="bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">المطورين أولاً</span>
+                        </div>
+                        <p class="text-slate-600 text-xs mb-3 font-semibold">طرق الدفع: مدى، آبل باي (Apple Pay)، سامسونج باي، إس تي سي باي (STC Pay)، فيزا، ماستركارد، أمريكان إكسبريس.</p>
+                        <p class="text-slate-600 text-xs mb-3"><strong>لماذا تشبه Stripe:</strong> تركز بشكل كبير على واجهات برمجية RESTful نظيفة، وبيئات اختبار ممتازة للمطورين، ومكتبات برمجية حديثة، وتدعم الفواتير المتكررة والدفع المقسم.</p>
+                        <p class="text-emerald-600 text-xs font-semibold"><i class="fa-solid fa-shield-halved ml-1"></i> مرخصة من البنك المركزي السعودي (ساما) ومعتمدة من هيئة الزكاة والضريبة والجمارك (ZATCA).</p>
+                    </div>
+
+                    <!-- PayTabs -->
+                    <div class="bg-white p-6 rounded-2xl border-r-4 border-emerald-500 shadow-sm hover:shadow-md transition-all duration-300">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-bold text-slate-900">2. بي تابس (PayTabs)</h3>
+                            <span class="bg-emerald-50 text-emerald-700 text-xs font-semibold px-3 py-1 rounded-full">المتاجر والتهيئة المشتركة</span>
+                        </div>
+                        <p class="text-slate-600 text-xs mb-3 font-semibold">طرق الدفع: مدى، آبل باي، إس تي سي باي، فيزا، ماستركارد، أمريكان إكسبريس، الشبكة الخليجية الموحدة.</p>
+                        <p class="text-slate-600 text-xs mb-3"><strong>لماذا تشبه Stripe:</strong> تعمل مثل Stripe Connect للعمليات المعقدة - مثالية للمدفوعات المقسمة في المتاجر الكبرى، وربط البائعين، والمكونات الإضافية القوية متعددة المناطق.</p>
+                        <p class="text-emerald-600 text-xs font-semibold"><i class="fa-solid fa-shield-halved ml-1"></i> رائد إقليمي قوي مع منظومة تكامل عميقة وشاملة.</p>
+                    </div>
+
+                    <!-- Tap Payments -->
+                    <div class="bg-white p-6 rounded-2xl border-r-4 border-purple-500 shadow-sm hover:shadow-md transition-all duration-300">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-bold text-slate-900">3. تيب بايمنتس (Tap Payments)</h3>
+                            <span class="bg-purple-50 text-purple-700 text-xs font-semibold px-3 py-1 rounded-full">الشركات الناشئة والإعداد السريع</span>
+                        </div>
+                        <p class="text-slate-600 text-xs mb-3 font-semibold">طرق الدفع: مدى، إس تي سي باي، آبل باي، جوجل باي، فيزا، ماستركارد، أمريكان إكسبريس، تمارا، تابي.</p>
+                        <p class="text-slate-600 text-xs mb-3"><strong>لماذا تشبه Stripe:</strong> لوحات تحكم حديثة وسهلة الاستخدام للغاية، وهياكل واجهة برمجية مرتبة، وميزة إنشاء روابط الدفع المضمنة "Tap Bill" لإرسالها على الواتساب فوراً.</p>
+                        <p class="text-emerald-600 text-xs font-semibold"><i class="fa-solid fa-shield-halved ml-1"></i> الأفضل للإعداد السريع للشركات الناشئة والتجارة الاجتماعية.</p>
+                    </div>
+
+                    <!-- HyperPay -->
+                    <div class="bg-white p-6 rounded-2xl border-r-4 border-amber-500 shadow-sm hover:shadow-md transition-all duration-300">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-bold text-slate-900">4. هايبر باي (HyperPay)</h3>
+                            <span class="bg-amber-50 text-amber-700 text-xs font-semibold px-3 py-1 rounded-full">الشركات الكبرى والتوسع</span>
+                        </div>
+                        <p class="text-slate-600 text-xs mb-3 font-semibold">طرق الدفع: باقة كاملة تشمل التكامل العميق مع المحافظ الرقمية وتوجيه مدى المحلي.</p>
+                        <p class="text-slate-600 text-xs mb-3"><strong>لماذا تشبه Stripe:</strong> أسعار معاملات مخصصة للأحجام الكبيرة، تسويات نقدية للشركات في اليوم التالي (T+1)، وعلاقات مصرفية محلية عميقة تزيد من معدلات قبول العمليات.</p>
+                        <p class="text-emerald-600 text-xs font-semibold"><i class="fa-solid fa-circle-check ml-1"></i> أعلى معدلات قبول لمعاملات مدى (تتجاوز 96% غالباً).</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade">
+                    <div class="lg:col-span-2 overflow-hidden bg-white rounded-2xl border border-slate-100 shadow-sm">
+                        <table class="w-full text-right border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-900 text-white">
+                                    <th class="p-3 font-bold">البوابة</th>
+                                    <th class="p-3 font-bold">نقطة القوة الأساسية</th>
+                                    <th class="p-3 font-bold">نوع المشروع المثالي</th>
+                                    <th class="p-3 font-bold">تجربة المطورين</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-slate-700">
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="p-3 font-semibold text-slate-900">ميسر (Moyasar)</td>
+                                    <td class="p-3">أنظف واجهات برمجية ومكتبات</td>
+                                    <td class="p-3">التطبيقات المخصصة، البرمجيات كخدمة (SaaS)، الاشتراكات</td>
+                                    <td class="p-3 text-blue-600 font-semibold">ممتازة (شبيهة بـ Stripe جداً)</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="p-3 font-semibold text-slate-900">بي تابس (PayTabs)</td>
+                                    <td class="p-3">الدفع المقسم والمكونات الإقليمية</td>
+                                    <td class="p-3">المتاجر الإلكترونية المشتركة</td>
+                                    <td class="p-3 text-emerald-600 font-semibold">رائعة (ميزات الربط المتكامل)</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="p-3 font-semibold text-slate-900">تيب بايمنتس (Tap Payments)</td>
+                                    <td class="p-3">أدوات بدون كود وإعداد سريع</td>
+                                    <td class="p-3">الأعمال الموجهة للمستهلك (B2C)، الشركات الناشئة، التجارة الاجتماعية</td>
+                                    <td class="p-3 text-purple-600 font-semibold">جيدة (ربط سريع)</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="p-3 font-semibold text-slate-900">هايبر باي (HyperPay)</td>
+                                    <td class="p-3">قوة معالجة للشركات الكبرى</td>
+                                    <td class="p-3">التطبيقات ذات المعاملات الكثيفة، الشركات</td>
+                                    <td class="p-3 text-amber-600 font-semibold">قوية / واجهات برمجية للشركات</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="bg-slate-900 text-white p-6 rounded-2xl border border-slate-800 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <h4 class="text-sm font-bold text-blue-400 mb-3"><i class="fa-solid fa-clipboard-check ml-2"></i>قائمة الامتثال التقني</h4>
+                            <ul class="space-y-2 text-[11px] text-slate-300 font-medium">
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-circle-check text-blue-400 mt-0.5 ml-2 mr-0"></i>
+                                    <span><strong>الربط الأصلي مع مدى:</strong> متطلب أساسي لمعالجة بطاقات الحسم الأساسية في المملكة.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-circle-check text-blue-400 mt-0.5 ml-2 mr-0"></i>
+                                    <span><strong>السجل التجاري (CR):</strong> مطلوب لتفعيل الحساب واستلام التحويلات النقدية للشركات.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-circle-check text-blue-400 mt-0.5 ml-2 mr-0"></i>
+                                    <span><strong>الامتثال للفوترة الإلكترونية (ZATCA):</strong> يجب أن تتكامل بوابة التجارة الإلكترونية مع طبقات الفوترة الإلكترونية المحلية.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 8: Roadmap Part 1 (Arabic) -->
+        <section class="slide bg-slate-50" id="slide-8-ar">
+            <div class="max-w-5xl mx-auto w-full">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-sm">الجدول الزمني للتنفيذ - الجزء الأول</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-12 animate-fade mt-2">الشهرين الأول والثاني: التأسيس والتوحيد</h2>
+                
+                <div class="space-y-6">
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 animate-fade flex flex-col md:flex-row gap-6 items-start">
+                        <div class="bg-blue-100 text-blue-700 font-bold px-4 py-2 rounded-lg whitespace-nowrap">الأسابيع 1-4</div>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold mb-3">البنية التحتية وهجرة البيانات</h3>
+                            <p class="text-slate-600 mb-4 text-sm">إعداد البيئة الأساسية ونقل سجلات المرضى التاريخية بأمان دون أي توقف للنظام.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-700">
+                                <div><i class="fa-solid fa-circle-check text-blue-500 ml-2"></i> نشر بيئات السحابة المحلية داخل المملكة</div>
+                                <div><i class="fa-solid fa-circle-check text-blue-500 ml-2"></i> نمذجة مخطط قاعدة البيانات (Prisma)</div>
+                                <div><i class="fa-solid fa-circle-check text-blue-500 ml-2"></i> إعداد سجلات التدقيق المتوافقة مع ضوابط الأمن السيبراني (NCA ECC)</div>
+                                <div><i class="fa-solid fa-circle-check text-blue-500 ml-2"></i> التخطيط الأولي واستيراد بيانات نظام إدارة العملاء (CRM)</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 animate-fade flex flex-col md:flex-row gap-6 items-start" style="animation-delay: 0.1s">
+                        <div class="bg-blue-100 text-blue-700 font-bold px-4 py-2 rounded-lg whitespace-nowrap">الأسابيع 5-8</div>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold mb-3">مركز الاتصالات والحجوزات</h3>
+                            <p class="text-slate-600 mb-4 text-sm">تركيز جميع مصادر العملاء المحتملين الواردة في صندوق وارد موحد يسهل على الفريق الوصول إليه.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-700">
+                                <div><i class="fa-solid fa-circle-check text-blue-500 ml-2"></i> الربط مع واجهة برمجيات واتساب للأعمال (WhatsApp Business API)</div>
+                                <div><i class="fa-solid fa-circle-check text-blue-500 ml-2"></i> إعداد مزودي الرسائل النصية والمكالمات الصوتية المحليين</div>
+                                <div><i class="fa-solid fa-circle-check text-blue-500 ml-2"></i> الربط مع واجهة Meta Graph (رسائل فيسبوك وإنستغرام المباشرة)</div>
+                                <div><i class="fa-solid fa-circle-check text-blue-500 ml-2"></i> مزامنة ثنائية الاتجاه مع تقويم جوجل (Google Calendar)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 9: Roadmap Part 2 (Arabic) -->
+        <section class="slide bg-white" id="slide-9-ar">
+            <div class="max-w-5xl mx-auto w-full">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-sm">الجدول الزمني للتنفيذ - الجزء الثاني</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-12 animate-fade mt-2">الشهر الثالث وما بعده: الأتمتة والذكاء الاصطناعي</h2>
+                
+                <div class="space-y-6">
+                    <div class="bg-slate-50 p-8 rounded-2xl shadow-sm border border-slate-200 animate-fade flex flex-col md:flex-row gap-6 items-start">
+                        <div class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-lg whitespace-nowrap">الأسابيع 9-12</div>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold mb-3">الأتمتة الذكية</h3>
+                            <p class="text-slate-600 mb-4 text-sm">استبدال العمل اليدوي للموظفين بمسارات عمل تلقائية وبوابات خدمة ذاتية للمرضى.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-700">
+                                <div><i class="fa-solid fa-gear text-purple-500 mr-2"></i> تنسيق طلبات الويب الفورية عبر Make.com/n8n</div>
+                                <div><i class="fa-solid fa-gear text-purple-500 mr-2"></i> ربط تنبيهات موظفي العيادة عبر Slack</div>
+                                <div><i class="fa-solid fa-gear text-purple-500 mr-2"></i> مسارات عمل تلقائية لإعادة تنشيط حالات عدم الحضور</div>
+                                <div><i class="fa-solid fa-gear text-purple-500 mr-2"></i> دمج بوابات الدفع السعودية (ميسر، بي تابس، تيب)</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-900 text-white p-8 rounded-2xl shadow-xl border border-slate-800 animate-fade flex flex-col md:flex-row gap-6 items-start" style="animation-delay: 0.1s">
+                        <div class="bg-emerald-900 text-emerald-400 border border-emerald-800 font-bold px-4 py-2 rounded-lg whitespace-nowrap">الأسابيع +13</div>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold mb-3">نشر وكيل الذكاء الاصطناعي المخصص</h3>
+                            <p class="text-slate-400 mb-4 text-sm">تدريب النماذج اللغوية على بيانات العيادة السابقة للتعامل مع استفسارات المرضى الأساسية بشكل مستقل.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-300">
+                                <div><i class="fa-solid fa-robot text-emerald-500 mr-2"></i> تضمينات متجهات الذكاء الاصطناعي عبر واجهة OpenAI</div>
+                                <div><i class="fa-solid fa-robot text-emerald-500 mr-2"></i> التدريب على الأسئلة الشائعة والتعامل مع الاعتراضات</div>
+                                <div><i class="fa-solid fa-robot text-emerald-500 mr-2"></i> بروتوكولات التحويل التلقائي للموظفين البشريين عند الحاجة</div>
+                                <div><i class="fa-solid fa-robot text-emerald-500 mr-2"></i> لوحة تحكم لتحليل معنويات ومشاعر المرضى</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 10: Visual Roadmap (Arabic) -->
+        <section class="slide bg-slate-950 text-white relative overflow-hidden" id="slide-10-ar" style="padding-top: 1.5rem; padding-bottom: 1.5rem;">
+            <!-- Background Glows -->
+            <div class="absolute top-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+            <div class="absolute bottom-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+            <div class="max-w-6xl w-full mx-auto flex flex-col justify-center relative z-10 text-right">
+                <!-- Slide Header -->
+                <div class="text-center mb-4 animate-fade">
+                    <span class="text-blue-500 font-extrabold tracking-widest uppercase text-sm">خارطة طريق المنتج</span>
+                    <h2 class="text-4xl md:text-5xl font-black mt-2 tracking-wide font-serif-royal">مخطط زمني لتنفيذ المشروع</h2>
+                    <div class="w-16 h-[2px] bg-gradient-to-r from-blue-500 via-purple-500 to-amber-500 mx-auto mt-4"></div>
+                </div>
+
+                <!-- Winding Horizontal Timeline (Desktop) -->
+                <div class="hidden lg:block relative w-full h-[320px] mt-2">
+                    <!-- SVG Winding Road Backdrop (Arabic) -->
+                    <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 1000 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Glow Backdrop Path -->
+                        <path d="M 0,160 C 50,160 75,120 125,120 C 200,120 300,200 375,200 C 450,200 550,120 625,120 C 700,120 800,200 875,200 C 925,200 950,160 1000,160" 
+                               stroke="url(#roadGlowAR)" stroke-width="24" stroke-linecap="round" opacity="0.15" />
+                        
+                        <!-- Neon Road Edge Borders -->
+                        <path d="M 0,160 C 50,160 75,120 125,120 C 200,120 300,200 375,200 C 450,200 550,120 625,120 C 700,120 800,200 875,200 C 925,200 950,160 1000,160" 
+                               stroke="url(#roadEdgeAR)" stroke-width="14" stroke-linecap="round" opacity="0.7" style="mix-blend-mode: screen;" />
+
+                        <!-- Main Road Bed -->
+                        <path d="M 0,160 C 50,160 75,120 125,120 C 200,120 300,200 375,200 C 450,200 550,120 625,120 C 700,120 800,200 875,200 C 925,200 950,160 1000,160" 
+                               stroke="#020617" stroke-width="10" stroke-linecap="round" />
+
+                        <!-- Dashed Center Divider Line -->
+                        <path d="M 0,160 C 50,160 75,120 125,120 C 200,120 300,200 375,200 C 450,200 550,120 625,120 C 700,120 800,200 875,200 C 925,200 950,160 1000,160" 
+                               stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="6,6" />
+
+                        <!-- Gradients Definitions -->
+                        <defs>
+                            <!-- Horizontal color flow for Arabic (Mirrored RTL) -->
+                            <linearGradient id="roadGlowAR" x1="1000" y1="160" x2="0" y2="160" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#3b82f6" />
+                                <stop offset="33%" stop-color="#10b981" />
+                                <stop offset="66%" stop-color="#8b5cf6" />
+                                <stop offset="100%" stop-color="#f59e0b" />
+                            </linearGradient>
+                            <linearGradient id="roadEdgeAR" x1="1000" y1="160" x2="0" y2="160" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#3b82f6" />
+                                <stop offset="33%" stop-color="#10b981" />
+                                <stop offset="66%" stop-color="#8b5cf6" />
+                                <stop offset="100%" stop-color="#f59e0b" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+
+                    <!-- Milestone Pins Overlay -->
+                    <!-- Pin 1: June (Blue) -->
+                    <div class="absolute left-[87.5%] top-[62.5%] -translate-x-1/2 -translate-y-1/2 z-20">
+                        <div class="w-6 h-6 rounded-full bg-slate-950 border-4 border-blue-500 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)] hover:scale-125 transition-transform duration-300">
+                            <div class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
+                        </div>
+                    </div>
+                    <!-- Pin 2: July (Emerald) -->
+                    <div class="absolute left-[62.5%] top-[37.5%] -translate-x-1/2 -translate-y-1/2 z-20">
+                        <div class="w-6 h-6 rounded-full bg-slate-950 border-4 border-emerald-500 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.5)] hover:scale-125 transition-transform duration-300">
+                            <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                        </div>
+                    </div>
+                    <!-- Pin 3: August (Purple) -->
+                    <div class="absolute left-[37.5%] top-[62.5%] -translate-x-1/2 -translate-y-1/2 z-20">
+                        <div class="w-6 h-6 rounded-full bg-slate-950 border-4 border-purple-500 flex items-center justify-center shadow-[0_0_15px_rgba(139,92,246,0.5)] hover:scale-125 transition-transform duration-300">
+                            <div class="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse"></div>
+                        </div>
+                    </div>
+                    <!-- Pin 4: September+ (Amber) -->
+                    <div class="absolute left-[12.5%] top-[37.5%] -translate-x-1/2 -translate-y-1/2 z-20">
+                        <div class="w-6 h-6 rounded-full bg-slate-950 border-4 border-amber-500 flex items-center justify-center shadow-[0_0_15px_rgba(245,158,11,0.5)] hover:scale-125 transition-transform duration-300">
+                            <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
+                        </div>
+                    </div>
+
+                    <!-- Cards Layout (Overlay on Grid) -->
+                    <div class="grid grid-cols-4 gap-8 w-full h-full relative z-10">
+                        <!-- Column 1: June (Top Card) -->
+                        <div class="flex flex-col items-center justify-start h-full">
+                            <div class="h-[200px] flex flex-col justify-start items-center w-full">
+                                <div class="glass-card border border-blue-500/20 hover:border-blue-500/50 rounded-2xl p-4 w-full transition-all duration-500 hover:shadow-[0_0_20px_rgba(59,130,246,0.15)] flex-shrink-0">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-blue-400 font-bold text-[10px] uppercase tracking-wider">يونيو (الأسابيع 1-4)</span>
+                                        <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400">
+                                            <i class="fa-solid fa-server text-xs"></i>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-base font-bold text-white mb-1.5">التأسيس</h3>
+                                    <ul class="space-y-1 text-[11px] leading-tight text-slate-300">
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-blue-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                            <span>إعداد السحابة السعودية المحلية</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-blue-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                            <span>نمذجة مخطط قاعدة البيانات (Prisma)</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-blue-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                            <span>سجلات تدقيق متوافقة مع NCA ECC</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-blue-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                            <span>استيراد وتخطيط بيانات نظام الـ CRM</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!-- Dashed connector going down -->
+                                <div class="w-[2px] flex-grow border-l-2 border-dashed border-blue-500/30"></div>
+                            </div>
+                        </div>
+
+                        <!-- Column 2: July (Bottom Card) -->
+                        <div class="flex flex-col items-center justify-end h-full">
+                            <div class="h-[200px] flex flex-col justify-end items-center w-full">
+                                <!-- Dashed connector going up -->
+                                <div class="w-[2px] flex-grow border-l-2 border-dashed border-emerald-500/30"></div>
+                                <div class="glass-card border border-emerald-500/20 hover:border-emerald-500/50 rounded-2xl p-4 w-full transition-all duration-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.15)] flex-shrink-0">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-emerald-400 font-bold text-[10px] uppercase tracking-wider">يوليو (الأسابيع 5-8)</span>
+                                        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                                            <i class="fa-solid fa-comments text-xs"></i>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-base font-bold text-white mb-1.5">الاتصالات</h3>
+                                    <ul class="space-y-1 text-[11px] leading-tight text-slate-300">
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                            <span>ربط واتساب للأعمال (WhatsApp API)</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                            <span>إعداد مزودي الرسائل النصية والمكالمات الصوتية المحليين</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                            <span>واجهة Meta Graph لرسائل FB و IG</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                            <span>مزامنة ثنائية الاتجاه لتقويم جوجل</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Column 3: August (Top Card) -->
+                        <div class="flex flex-col items-center justify-start h-full">
+                            <div class="h-[200px] flex flex-col justify-start items-center w-full">
+                                <div class="glass-card border border-purple-500/20 hover:border-purple-500/50 rounded-2xl p-4 w-full transition-all duration-500 hover:shadow-[0_0_20px_rgba(139,92,246,0.15)] flex-shrink-0">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-purple-400 font-bold text-[10px] uppercase tracking-wider">أغسطس (الأسابيع 9-12)</span>
+                                        <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400">
+                                            <i class="fa-solid fa-gears text-xs"></i>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-base font-bold text-white mb-1.5">الأتمتة</h3>
+                                    <ul class="space-y-1 text-[11px] leading-tight text-slate-300">
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-purple-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                            <span>تنسيق الطلبات عبر Make.com/n8n</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-purple-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                            <span>دمج إشعارات الموظفين عبر Slack</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-purple-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                            <span>أتمتة إعادة تنشيط حالات عدم الحضور</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-purple-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                            <span>دمج بوابات الدفع السعودية المحلية</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!-- Dashed connector going down -->
+                                <div class="w-[2px] flex-grow border-l-2 border-dashed border-purple-500/30"></div>
+                            </div>
+                        </div>
+
+                        <!-- Column 4: September+ (Bottom Card) -->
+                        <div class="flex flex-col items-center justify-end h-full">
+                            <div class="h-[200px] flex flex-col justify-end items-center w-full">
+                                <!-- Dashed connector going up -->
+                                <div class="w-[2px] flex-grow border-l-2 border-dashed border-amber-500/30"></div>
+                                <div class="glass-card border border-amber-500/20 hover:border-amber-500/50 rounded-2xl p-4 w-full transition-all duration-500 hover:shadow-[0_0_20px_rgba(245,158,11,0.15)] flex-shrink-0">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-amber-400 font-bold text-[10px] uppercase tracking-wider">سبتمبر وما بعده (الأسابيع +13)</span>
+                                        <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400">
+                                            <i class="fa-solid fa-brain text-xs"></i>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-base font-bold text-white mb-1.5">الذكاء الاصطناعي</h3>
+                                    <ul class="space-y-1 text-[11px] leading-tight text-slate-300">
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-amber-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                            <span>تضمينات متجهات OpenAI المخصصة</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-amber-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                            <span>التدريب على الأسئلة والاعتراضات الشائعة</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-amber-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                            <span>بروتوكول التحويل التلقائي للموظفين</span>
+                                        </li>
+                                        <li class="flex items-start gap-1.5">
+                                            <i class="fa-solid fa-circle-check text-amber-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                            <span>لوحة تشغيل تحليل معنويات المرضى</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>n>دمج إشعارات الموظفين عبر Slack</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Column 3: August (Top Card) -->
+                        <div class="flex flex-col items-center justify-start h-full">
+                            <div class="glass-card border border-purple-500/20 hover:border-purple-500/50 rounded-2xl p-4 w-full transition-all duration-500 hover:shadow-[0_0_20px_rgba(139,92,246,0.15)] flex-shrink-0">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-purple-400 font-bold text-[10px] uppercase tracking-wider">أغسطس (الأسابيع 9-12)</span>
+                                    <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400">
+                                        <i class="fa-solid fa-gears text-xs"></i>
+                                    </div>
+                                </div>
+                                <h3 class="text-base font-bold text-white mb-1.5">الأتمتة</h3>
+                                <ul class="space-y-1 text-[11px] leading-tight text-slate-300">
+                                    <li class="flex items-start gap-1.5">
+                                        <i class="fa-solid fa-circle-check text-purple-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                        <span>تنسيق الطلبات عبر Make.com/n8n</span>
+                                    </li>
+                                    <li class="flex items-start gap-1.5">
+                                        <i class="fa-solid fa-circle-check text-purple-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                        <span>دمج إشعارات الموظفين عبر Slack</span>
+                                    </li>
+                                    <li class="flex items-start gap-1.5">
+                                        <i class="fa-solid fa-circle-check text-purple-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                        <span>أتمتة إعادة تنشيط حالات عدم الحضور</span>
+                                    </li>
+                                    <li class="flex items-start gap-1.5">
+                                        <i class="fa-solid fa-circle-check text-purple-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                        <span>دمج بوابات الدفع السعودية المحلية</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- Dashed connector going down -->
+                            <div class="w-[2px] h-[30px] border-l-2 border-dashed border-purple-500/30 flex-grow-0"></div>
+                        </div>
+
+                        <!-- Column 4: September+ (Bottom Card) -->
+                        <div class="flex flex-col items-center justify-end h-full">
+                            <!-- Dashed connector going up -->
+                            <div class="w-[2px] h-[30px] border-l-2 border-dashed border-amber-500/30 flex-grow-0"></div>
+                            <div class="glass-card border border-amber-500/20 hover:border-amber-500/50 rounded-2xl p-4 w-full transition-all duration-500 hover:shadow-[0_0_20px_rgba(245,158,11,0.15)] flex-shrink-0">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-amber-400 font-bold text-[10px] uppercase tracking-wider">سبتمبر وما بعده (الأسابيع +13)</span>
+                                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400">
+                                        <i class="fa-solid fa-brain text-xs"></i>
+                                    </div>
+                                </div>
+                                <h3 class="text-base font-bold text-white mb-1.5">الذكاء الاصطناعي</h3>
+                                <ul class="space-y-1 text-[11px] leading-tight text-slate-300">
+                                    <li class="flex items-start gap-1.5">
+                                        <i class="fa-solid fa-circle-check text-amber-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                        <span>تضمينات متجهات OpenAI المخصصة</span>
+                                    </li>
+                                    <li class="flex items-start gap-1.5">
+                                        <i class="fa-solid fa-circle-check text-amber-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                        <span>التدريب على الأسئلة والاعتراضات الشائعة</span>
+                                    </li>
+                                    <li class="flex items-start gap-1.5">
+                                        <i class="fa-solid fa-circle-check text-amber-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                        <span>بروتوكول التحويل التلقائي للموظفين</span>
+                                    </li>
+                                    <li class="flex items-start gap-1.5">
+                                        <i class="fa-solid fa-circle-check text-amber-500 mt-0.5 shrink-0 text-[10px] ml-1.5"></i>
+                                        <span>لوحة تشغيل لتحليل معنويات المرضى</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fallback Vertical Layout for Mobile/Tablet (Arabic) -->
+                <div class="lg:hidden flex flex-col relative border-r-2 border-dashed border-slate-700/50 pr-6 mr-4 space-y-8 py-2 text-right">
+                    <!-- Mobile Phase 1 -->
+                    <div class="relative">
+                        <div class="absolute -right-[33px] top-1.5 w-4 h-4 rounded-full bg-slate-950 border-2 border-blue-500 flex items-center justify-center">
+                            <div class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
+                        </div>
+                        <div class="glass-card border border-blue-500/20 rounded-2xl p-5">
+                            <span class="text-blue-400 font-bold text-xs uppercase tracking-wider block mb-2">يونيو (الأسابيع 1-4)</span>
+                            <h3 class="text-lg font-bold text-white mb-2">التأسيس</h3>
+                            <ul class="space-y-1.5 text-xs text-slate-300">
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-blue-500 mt-0.5 shrink-0 ml-2"></i>
+                                    <span>إعداد السحابة السعودية المحلية</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-blue-500 mt-0.5 shrink-0 ml-2"></i>
+                                    <span>نمذجة مخطط قاعدة البيانات (Prisma)</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-blue-500 mt-0.5 shrink-0 ml-2"></i>
+                                    <span>سجلات تدقيق متوافقة مع NCA ECC</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Phase 2 -->
+                    <div class="relative">
+                        <div class="absolute -right-[33px] top-1.5 w-4 h-4 rounded-full bg-slate-950 border-2 border-emerald-500 flex items-center justify-center">
+                            <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                        </div>
+                        <div class="glass-card border border-emerald-500/20 rounded-2xl p-5">
+                            <span class="text-emerald-400 font-bold text-xs uppercase tracking-wider block mb-2">يوليو (الأسابيع 5-8)</span>
+                            <h3 class="text-lg font-bold text-white mb-2">الاتصالات</h3>
+                            <ul class="space-y-1.5 text-xs text-slate-300">
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 shrink-0 ml-2"></i>
+                                    <span>ربط واتساب للأعمال (WhatsApp API)</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 shrink-0 ml-2"></i>
+                                    <span>إعداد مزودي الرسائل النصية والمكالمات الصوتية المحليين</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 shrink-0 ml-2"></i>
+                                    <span>واجهة Meta Graph لرسائل FB و IG</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Phase 3 -->
+                    <div class="relative">
+                        <div class="absolute -right-[33px] top-1.5 w-4 h-4 rounded-full bg-slate-950 border-2 border-purple-500 flex items-center justify-center">
+                            <div class="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse"></div>
+                        </div>
+                        <div class="glass-card border border-purple-500/20 rounded-2xl p-5">
+                            <span class="text-purple-400 font-bold text-xs uppercase tracking-wider block mb-2">أغسطس (الأسابيع 9-12)</span>
+                            <h3 class="text-lg font-bold text-white mb-2">الأتمتة</h3>
+                            <ul class="space-y-1.5 text-xs text-slate-300">
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-purple-500 mt-0.5 shrink-0 ml-2"></i>
+                                    <span>تنسيق الطلبات عبر Make.com/n8n</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-purple-500 mt-0.5 shrink-0 ml-2"></i>
+                                    <span>دمج إشعارات الموظفين عبر Slack</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-purple-500 mt-0.5 shrink-0 ml-2"></i>
+                                    <span>دمج بوابات الدفع السعودية المحلية</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Phase 4 -->
+                    <div class="relative">
+                        <div class="absolute -right-[33px] top-1.5 w-4 h-4 rounded-full bg-slate-950 border-2 border-amber-500 flex items-center justify-center">
+                            <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
+                        </div>
+                        <div class="glass-card border border-amber-500/20 rounded-2xl p-5">
+                            <span class="text-amber-400 font-bold text-xs uppercase tracking-wider block mb-2">سبتمبر وما بعده (الأسابيع +13)</span>
+                            <h3 class="text-lg font-bold text-white mb-2">الذكاء الاصطناعي</h3>
+                            <ul class="space-y-1.5 text-xs text-slate-300">
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-amber-500 mt-0.5 shrink-0 ml-2"></i>
+                                    <span>تضمينات متجهات OpenAI المخصصة</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-amber-500 mt-0.5 shrink-0 ml-2"></i>
+                                    <span>التدريب على الأسئلة والاعتراضات الشائعة</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-amber-500 mt-0.5 shrink-0 ml-2"></i>
+                                    <span>لوحة تشغيل لتحليل معنويات المرضى</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+            </div>
+        </section>
+
+        <!-- Slide 11: ROI Impact (Arabic) -->
+        <section class="slide bg-slate-50 text-right" id="slide-11-ar">
+            <h2 class="text-4xl font-bold mb-16 animate-fade">تأثير عائد الاستثمار بمقدار 50 ضعفاً</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="p-8 border-t-4 border-blue-500 bg-white rounded-xl shadow-sm animate-fade">
+                    <div class="text-5xl font-extrabold text-slate-900 mb-4">40%+</div>
+                    <h3 class="text-xl font-bold mb-2">زيادة تحويل العملاء</h3>
+                    <p class="text-slate-600 text-sm">من خلال إشراك العملاء المحتملين في غضون 5 دقائق عبر الذكاء الاصطناعي والرسائل متعددة القنوات.</p>
+                </div>
+                <div class="p-8 border-t-4 border-emerald-500 bg-white rounded-xl shadow-sm animate-fade" style="animation-delay: 0.1s">
+                    <div class="text-5xl font-extrabold text-slate-900 mb-4">60%-</div>
+                    <h3 class="text-xl font-bold mb-2">خفض معدل عدم الحضور</h3>
+                    <p class="text-slate-600 text-sm">من خلال التذكيرات الآلية الذكية ومسارات إعادة الجدولة السهلة.</p>
+                </div>
+                <div class="p-8 border-t-4 border-purple-500 bg-white rounded-xl shadow-sm animate-fade" style="animation-delay: 0.2s">
+                    <div class="text-5xl font-extrabold text-slate-900 mb-4">24/7</div>
+                    <h3 class="text-xl font-bold mb-2">تشغيل على مدار الساعة</h3>
+                    <p class="text-slate-600 text-sm">يتولى الذكاء الاصطناعي معالجة استفسارات المرضى وحجوزاتهم طوال اليوم دون الحاجة لموظفين إضافيين.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 12: Next Steps (Arabic) -->
+        <section class="slide bg-white text-center" id="slide-12-ar">
+            <div class="animate-fade max-w-4xl text-center mx-auto text-right">
+                <h2 class="text-6xl font-extrabold text-slate-900 mb-8 text-center">هل أنت مستعد للنمو بمقدار <span class="text-blue-600">50 ضعفاً؟</span></h2>
+                <p class="text-xl text-slate-600 mb-12 text-center">دعنا نقضي على الفوضى ونبني محرك النمو الخاص بك اليوم.</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="Technical_DeepDive_Flyer.pdf" download class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded font-bold transition">تحميل النشرة الفنية للمشروع</a>
+                </div>
+                <div class="mt-16 text-slate-500 text-center">
+                    <p>هل لديك أسئلة؟ تواصل معنا عبر البريد الإلكتروني: <a href="mailto:info@arabiaintelligence.com" class="text-blue-600 font-semibold hover:underline">info@arabiaintelligence.com</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 13: Glossary (Arabic) -->
+        <section class="slide bg-slate-900 text-white text-right" id="slide-13-ar">
+            <div class="max-w-6xl w-full mx-auto">
+                <span class="text-blue-400 font-bold tracking-widest uppercase text-sm">ملحق المراجع الأساسية</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-10 animate-fade mt-2">قاموس المصطلحات والاختصارات</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade">
+                    <div class="bg-slate-800/60 p-6 rounded-2xl border border-slate-700/60">
+                        <span class="text-blue-400 font-bold text-xs uppercase tracking-wider block mb-2 text-right">الهيئات التنظيمية السعودية</span>
+                        <ul class="space-y-3 text-right">
+                            <li>
+                                <strong class="text-white block text-sm font-bold">SDAIA (سدايا)</strong>
+                                <span class="text-slate-400 text-xs">الهيئة السعودية للبيانات والذكاء الاصطناعي. الجهة التنظيمية الوطنية المشرفة على حماية البيانات وسياسات الذكاء الاصطناعي في المملكة.</span>
+                            </li>
+                            <li>
+                                <strong class="text-white block text-sm font-bold">NCA (الهيئة الوطنية)</strong>
+                                <span class="text-slate-400 text-xs">الهيئة الوطنية للأمن السيبراني. الكيان الحكومي المسؤول عن وضع ومراقبة معمعايير الأمن السيبراني في المملكة العربية السعودية.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-800/60 p-6 rounded-2xl border border-slate-700/60">
+                        <span class="text-emerald-400 font-bold text-xs uppercase tracking-wider block mb-2 text-right">الامتثال والخصوصية</span>
+                        <ul class="space-y-3 text-right">
+                            <li>
+                                <strong class="text-white block text-sm font-bold font-mono">PDPL</strong>
+                                <span class="text-slate-400 text-xs">نظام حماية البيانات الشخصية. الإطار التشريعي الأساسي الذي يحكم معالجة البيانات الشخصية وحمايتها في المملكة العربية السعودية.</span>
+                            </li>
+                            <li>
+                                <strong class="text-white block text-sm font-bold font-mono">ECC</strong>
+                                <span class="text-slate-400 text-xs">الضوابط الأساسية للأمن السيبراني. متطلبات الأمن السيبراني الأساسية الصادرة عن الهيئة الوطنية للأمن السيبراني للمنشآت المحلية.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-800/60 p-6 rounded-2xl border border-slate-700/60">
+                        <span class="text-purple-400 font-bold text-xs uppercase tracking-wider block mb-2 text-right">التقنية والبنية التحتية</span>
+                        <ul class="space-y-3 text-right">
+                            <li>
+                                <strong class="text-white block text-sm font-bold font-mono">SSR</strong>
+                                <span class="text-slate-400 text-xs">عرض الصفحات من جانب الخادم. آلية في Next.js تنشئ صفحات الويب على الخادم لتقديم سرعات تحميل فورية.</span>
+                            </li>
+                            <li>
+                                <strong class="text-white block text-sm font-bold font-mono">WAF & DDoS</strong>
+                                <span class="text-slate-400 text-xs">جدار حماية التطبيقات والحماية من هجمات حجب الخدمة. طبقات أمان تحجب حركة المرور الخبيثة وتمنع التحميل الزائد على النظام.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-800/60 p-6 rounded-2xl border border-slate-700/60">
+                        <span class="text-amber-400 font-bold text-xs uppercase tracking-wider block mb-2 text-right">العمليات وإدارة المرضى</span>
+                        <ul class="space-y-3 text-right">
+                            <li>
+                                <strong class="text-white block text-sm font-bold font-mono">CRM</strong>
+                                <span class="text-slate-400 text-xs">إدارة علاقات العملاء. منصة مصممة لإدارة الاتصالات السريرية، وتحويل قنوات البيع، والعمليات التشغيلية للمرضى.</span>
+                            </li>
+                            <li>
+                                <strong class="text-white block text-sm font-bold font-mono">EHR / EMR</strong>
+                                <span class="text-slate-400 text-xs">السجل الصحي الإلكتروني / السجل الطبي الإلكتروني. منصات رقمية موحدة تستخدم لإدارة وعرض السجلات الطبية والتاريخ السريري للمرضى.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-800/60 p-6 rounded-2xl border border-slate-700/60">
+                        <span class="text-pink-400 font-bold text-xs uppercase tracking-wider block mb-2 text-right">أمن البيانات وأنواعها</span>
+                        <ul class="space-y-3 text-right">
+                            <li>
+                                <strong class="text-white block text-sm font-bold font-mono">PII</strong>
+                                <span class="text-slate-400 text-xs">معلومات الهوية الشخصية. أي بيانات مريض يمكن استخدامها للتعرف عليه بشكل محدد (مثل رقم الهوية الوطنية أو رقم الهاتف).</span>
+                            </li>
+                            <li>
+                                <strong class="text-white block text-sm font-bold font-mono">AES-256</strong>
+                                <span class="text-slate-400 text-xs">معيار التشفير المتقدم. خوارزمية تشفير عسكرية تستخدم لتشفير سجلات قاعدة البيانات في حالة السكون وأثناء النقل.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-800/60 p-6 rounded-2xl border border-slate-700/60">
+                        <span class="text-cyan-400 font-bold text-xs uppercase tracking-wider block mb-2 text-right">المؤشرات والتكامل</span>
+                        <ul class="space-y-3 text-right">
+                            <li>
+                                <strong class="text-white block text-sm font-bold font-mono">API</strong>
+                                <span class="text-slate-400 text-xs">واجهة برمجة التطبيقات. بروتوكول يتيح للبرامج والأنظمة المختلفة (مثل السجل الطبي الإلكتروني وClinicFlow) تبادل البيانات فيما بينها.</span>
+                            </li>
+                            <li>
+                                <strong class="text-white block text-sm font-bold font-mono">ROI</strong>
+                                <span class="text-slate-400 text-xs">عائد الاستثمار. مؤشر يوضح المردود المالي المتحقق مقارنة برأس المال المستثمر في المشروع.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Floating Top Button -->
+    <button id="goTopBtn" class="fixed bg-gray-800 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 transition" onclick="goToSlide('slide-1-' + currentLang)">↑</button>
+
+    <!-- Navigation & Localization Script -->
+    <script>
+        const slidesDataEN = [
+            { id: 'slide-1', title: 'Intro' },
+            { id: 'slide-2', title: 'Frontend & Edge' },
+            { id: 'slide-3', title: 'Backend & Security' },
+            { id: 'slide-3-5', title: 'Architecture' },
+            { id: 'slide-4', title: 'Growth Suite' },
+            { id: 'slide-5', title: 'Ecosystem' },
+            { id: 'slide-6', title: 'Social Media' },
+            { id: 'slide-7', title: 'Saudi Payments' },
+            { id: 'slide-8', title: 'Roadmap Pt. 1' },
+            { id: 'slide-9', title: 'Roadmap Pt. 2' },
+            { id: 'slide-10', title: 'Visual Roadmap' },
+            { id: 'slide-11', title: 'ROI Impact' },
+            { id: 'slide-12', title: 'Next Steps' },
+            { id: 'slide-13', title: 'Acronyms Glossary' },
+        ];
+
+        const slidesDataAR = [
+            { id: 'slide-1', title: 'المقدمة' },
+            { id: 'slide-2', title: 'الواجهة والشبكة' },
+            { id: 'slide-3', title: 'المحرك والأمن' },
+            { id: 'slide-3-5', title: 'هيكلية النظام' },
+            { id: 'slide-4', title: 'حزمة النمو' },
+            { id: 'slide-5', title: 'منظومة التكامل' },
+            { id: 'slide-6', title: 'التواصل الاجتماعي' },
+            { id: 'slide-7', title: 'المدفوعات الرقمية' },
+            { id: 'slide-8', title: 'خارطة طريق 1' },
+            { id: 'slide-9', title: 'خارطة طريق 2' },
+            { id: 'slide-10', title: 'خارطة الطريق المرئية' },
+            { id: 'slide-11', title: 'عائد الاستثمار' },
+            { id: 'slide-12', title: 'الخطوات التالية' },
+            { id: 'slide-13', title: 'قاموس الاختصارات' },
+        ];
+
+        let currentLang = 'en';
+        let currentSlide = 1;
+
+        // Render Sidebar Elements
+        function renderSidebar(lang) {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.innerHTML = '';
+            const data = lang === 'en' ? slidesDataEN : slidesDataAR;
+            
+            data.forEach((slide, index) => {
+                const item = document.createElement('div');
+                item.className = `nav-item ${index + 1 === currentSlide ? 'active' : ''}`;
+                item.dataset.target = slide.id;
+                item.onclick = () => goToSlide(slide.id + '-' + lang);
+                
+                item.innerHTML = `
+                    <div class="nav-dot"></div>
+                    <div class="nav-line"></div>
+                    <div class="nav-label">${slide.title}</div>
+                `;
+                sidebar.appendChild(item);
+            });
+        }
+
+        // Initialize Sidebar
+        renderSidebar('en');
+
+        // Smooth scroll to slide
+        function goToSlide(id) {
+            const target = document.getElementById(id);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function nextSlide() {
+            const data = currentLang === 'en' ? slidesDataEN : slidesDataAR;
+            currentSlide = currentSlide + 1;
+            if (currentSlide > data.length) currentSlide = 1;
+            goToSlide(data[currentSlide - 1].id + '-' + currentLang);
+        }
+
+        function prevSlide() {
+            const data = currentLang === 'en' ? slidesDataEN : slidesDataAR;
+            currentSlide = currentSlide - 1;
+            if (currentSlide < 1) currentSlide = data.length;
+            goToSlide(data[currentSlide - 1].id + '-' + currentLang);
+        }
+
+        // Language Switch Toggle
+        function toggleLanguage() {
+            // Record current scroll position (vertical offset)
+            const currentOffset = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+            if (currentLang === 'en') {
+                currentLang = 'ar';
+                document.getElementById('presentation-en').style.display = 'none';
+                document.getElementById('presentation-ar').style.display = 'block';
+                document.getElementById('langBtn').innerHTML = '<i class="fa-solid fa-language"></i> English';
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = 'ar';
+                renderSidebar('ar');
+                updateNavButtons();
+            } else {
+                currentLang = 'en';
+                document.getElementById('presentation-en').style.display = 'block';
+                document.getElementById('presentation-ar').style.display = 'none';
+                document.getElementById('langBtn').innerHTML = '<i class="fa-solid fa-language"></i> العربية';
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'en';
+                renderSidebar('en');
+                updateNavButtons();
+            }
+            // Restore the scroll position after layout changes
+            window.scrollTo(0, currentOffset);
+            
+            // Ensure the active slide is correctly highlighted after scroll restoration
+            const data = currentLang === 'en' ? slidesDataEN : slidesDataAR;
+            goToSlide(data[currentSlide - 1].id + '-' + currentLang);
+        }
+
+        function updateNavButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            if (currentLang === 'en') {
+                prevBtn.textContent = 'Previous';
+                nextBtn.textContent = 'Next';
+            } else {
+                prevBtn.textContent = 'السابق';
+                nextBtn.textContent = 'التالي';
+            }
+        }
+
+        // Keyboard navigation (arrow keys)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                if (currentLang === 'en') nextSlide(); else prevSlide();
+            } else if (e.key === 'ArrowLeft') {
+                if (currentLang === 'en') prevSlide(); else nextSlide();
+            }
+        });
+
+        // Intersection Observer for updating active state on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+                    const id = entry.target.id;
+                    const slideId = id.substring(0, id.lastIndexOf('-')); // remove '-en' or '-ar'
+                    const data = currentLang === 'en' ? slidesDataEN : slidesDataAR;
+                    const index = data.findIndex(s => s.id === slideId);
+                    
+                    if (index !== -1) {
+                        currentSlide = index + 1;
+                        document.querySelectorAll('.nav-item').forEach(navItem => {
+                            if (navItem.dataset.target === slideId) {
+                                navItem.classList.add('active');
+                            } else {
+                                navItem.classList.remove('active');
+                            }
+                        });
+                    }
+                }
+            });
+        }, { threshold: 0.5 });
+
+        // 3D Tilt Effect for Glass Cards
+        document.addEventListener('mousemove', (e) => {
+            const cards = document.querySelectorAll('.glass-card');
+            const x = e.clientX;
+            const y = e.clientY;
+
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                // Calculate rotation based on mouse position relative to card center
+                const deltaX = (x - centerX) / 35; // Tilt angle factor
+                const deltaY = (centerY - y) / 35; // Tilt angle factor
+
+                // Restrict tilt values to prevent excessive distortion
+                const tiltX = Math.max(-8, Math.min(8, deltaY));
+                const tiltY = Math.max(-8, Math.min(8, deltaX));
+
+                card.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(1.02, 1.02, 1.02)`;
+                card.style.transition = 'transform 0.1s ease-out';
+            });
+        });
+
+        document.addEventListener('mouseleave', () => {
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach(card => {
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+                card.style.transition = 'transform 0.5s ease-out';
+            });
+        });
+
+        // Observe both English and Arabic slide elements
+        document.querySelectorAll('.slide').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

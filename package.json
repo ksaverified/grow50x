@@ -1,0 +1,28 @@
+{
+  "name": "grow50x",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "seed": "node seed-demo.js",
+    "docs:review": "node scripts/docs-review.js",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.4.19",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.3.1",
+    "next": "^14.2.5",
+    "pg": "^8.11.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^3.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "25.9.1",
+    "@types/react": "19.2.15",
+    "typescript": "6.0.3"
+  }
+}
