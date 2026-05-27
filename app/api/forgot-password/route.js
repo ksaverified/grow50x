@@ -1,10 +1,17 @@
 import { Pool } from 'pg';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgres://postgres:gr8wTh50x@localhost:5433/clinicflow',
-});
+const connectionString = process.env.DATABASE_URL;
+
+const pool = connectionString ? new Pool({ connectionString }) : null;
 
 export async function POST(request) {
+  if (!pool) {
+    console.error('Forgot password error: DATABASE_URL is not configured.');
+    return Response.json(
+      { success: false, message: 'Database not configured on this environment. Set DATABASE_URL.' },
+      { status: 500 }
+    );
+  }
   const { accountId, username } = await request.json();
 
   if (!accountId || !username) {

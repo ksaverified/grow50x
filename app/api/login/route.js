@@ -1,11 +1,18 @@
 import { Pool } from 'pg';
 import bcrypt from 'bcryptjs';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgres://postgres:gr8wTh50x@localhost:5433/clinicflow',
-});
+const connectionString = process.env.DATABASE_URL;
+
+const pool = connectionString ? new Pool({ connectionString }) : null;
 
 export async function POST(request) {
+  if (!pool) {
+    console.error('Login error: DATABASE_URL is not configured.');
+    return Response.json(
+      { success: false, message: 'Database not configured on this environment. Set DATABASE_URL.' },
+      { status: 500 }
+    );
+  }
   const body = await request.json();
   const accountId = body.accountId?.trim();
   const username = body.username?.trim();
