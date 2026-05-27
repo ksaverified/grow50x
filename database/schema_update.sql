@@ -16,7 +16,18 @@ ALTER TABLE tenants
 ALTER TABLE tenants
     ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;
 
-UPDATE tenants SET clinic_name = name_en WHERE clinic_name IS NULL;
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_name = 'tenants'
+          AND column_name = 'name_en'
+    ) THEN
+        UPDATE tenants SET clinic_name = name_en WHERE clinic_name IS NULL;
+    END IF;
+END$$;
+
 ALTER TABLE tenants ALTER COLUMN clinic_name SET NOT NULL;
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_tenants_tenant_id ON tenants(tenant_id);
@@ -81,11 +92,30 @@ ALTER TABLE patients
 
 UPDATE patients SET patient_id = uuid_generate_v4() WHERE patient_id IS NULL;
 
-ALTER TABLE patients
-    ADD CONSTRAINT patients_identity_type_check CHECK (identity_type IN ('National_ID', 'Iqama', 'Passport'));
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_constraint c
+        JOIN pg_class t ON c.conrelid = t.oid
+        WHERE t.relname = 'patients'
+          AND c.contype = 'c'
+          AND c.conname = 'patients_identity_type_check'
+    ) THEN
+        ALTER TABLE patients ADD CONSTRAINT patients_identity_type_check CHECK (identity_type IN ('National_ID', 'Iqama', 'Passport'));
+    END IF;
 
-ALTER TABLE patients
-    ADD CONSTRAINT patients_gender_check CHECK (gender IN ('Male', 'Female', 'Undetermined'));
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_constraint c
+        JOIN pg_class t ON c.conrelid = t.oid
+        WHERE t.relname = 'patients'
+          AND c.contype = 'c'
+          AND c.conname = 'patients_gender_check'
+    ) THEN
+        ALTER TABLE patients ADD CONSTRAINT patients_gender_check CHECK (gender IN ('Male', 'Female', 'Undetermined'));
+    END IF;
+END$$;
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_patients_patient_id ON patients(patient_id);
 CREATE INDEX IF NOT EXISTS idx_patients_tenant_identity ON patients(tenant_id, identity_number);
@@ -205,3 +235,4 @@ BEGIN
         END IF;
     END IF;
 END$$;
+
