@@ -45,11 +45,11 @@ postgresql://postgres:[YOUR-PASSWORD]@db.sjyfqzsxumpivfudgohu.supabase.co:5432/p
 ### 3.1 Connect Your GitHub Repository
 ✅ **Your repository:**
 ```
-https://github.com/sagrow50x/grow50x
+https://github.com/ksaverified/grow50x
 ```
 **Steps:**
 1. Go to [vercel.com](https://vercel.com)
-2. Sign up / Log in
+2. Sign up / Log in with your new account
 3. Click **Add New** → **Project**
 4. Search for `grow50x` and select it
 5. Vercel will auto-detect Next.js settings
@@ -60,7 +60,7 @@ In the Vercel dashboard:
 2. Add the following variables:
    - `DATABASE_URL`: `postgresql://postgres:[YOUR-PASSWORD]@db.sjyfqzsxumpivfudgohu.supabase.co:5432/postgres`
    - `EMAIL_SERVICE`: `gmail`
-   - `EMAIL_USER`: `sa.grow50x@gmail.com`
+   - `EMAIL_USER`: `ksaverified@gmail.com`
    - `EMAIL_PASSWORD`: (your Gmail app-specific password)
 3. Click **Deploy**
 
