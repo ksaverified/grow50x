@@ -1,4 +1,4 @@
-import { findTenantByAccountId, findUserByTenantAndUsername } from '@/lib/mockData';
+import { findTenantByAccountId, findUserByTenantAndUsername } from '../../lib/mockData';
 
 export async function POST(request) {
   const body = await request.json();
