@@ -28,6 +28,7 @@ ClinicFlow should support at least these roles:
 - **Nurse**: Supports patient intake, notes, and preparation tasks.
 - **Receptionist**: Manages scheduling, patient registration, and billing intake.
 - **Accountant**: Handles invoicing, payments, and financial reporting.
+- **Community**: Executes social media outreach, schedules promotional posts, and monitors engagement while keeping public communications compliant.
 
 ### Recommended user setup
 

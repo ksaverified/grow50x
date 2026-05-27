@@ -22,6 +22,12 @@ ALTER TABLE tenants ALTER COLUMN clinic_name SET NOT NULL;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_tenants_tenant_id ON tenants(tenant_id);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_tenants_moh_license_number ON tenants(moh_license_number);
 
+-- Add account_id field for simplified Account ID format
+ALTER TABLE tenants
+    ADD COLUMN IF NOT EXISTS account_id VARCHAR(20) UNIQUE;
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_tenants_account_id ON tenants(account_id);
+
 -- ============================================================================
 -- 2. PATIENTS TABLE
 -- ============================================================================
@@ -165,3 +171,37 @@ CREATE TABLE IF NOT EXISTS billing_claims (
 );
 
 CREATE INDEX IF NOT EXISTS idx_claims_tenant_status ON billing_claims(tenant_id, claim_status);
+
+-- ============================================================================
+-- 7. COMMUNITY ROLE SUPPORT
+-- ============================================================================
+DO $$
+DECLARE
+    old_constraint text;
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'clinic_users') THEN
+        -- Find check constraint that does not contain Community
+        SELECT c.conname INTO old_constraint
+        FROM pg_constraint c
+        JOIN pg_class t ON c.conrelid = t.oid
+        WHERE t.relname = 'clinic_users'
+          AND c.contype = 'c'
+          AND pg_get_constraintdef(c.oid) NOT LIKE '%Community%';
+
+        IF old_constraint IS NOT NULL THEN
+            EXECUTE format('ALTER TABLE clinic_users DROP CONSTRAINT %I', old_constraint);
+        END IF;
+
+        -- Verify if the updated constraint with 'Community' exists
+        IF NOT EXISTS (
+            SELECT 1
+            FROM pg_constraint c
+            JOIN pg_class t ON c.conrelid = t.oid
+            WHERE t.relname = 'clinic_users'
+              AND c.contype = 'c'
+              AND pg_get_constraintdef(c.oid) LIKE '%Community%'
+        ) THEN
+            EXECUTE 'ALTER TABLE clinic_users ADD CONSTRAINT clinic_users_role_check CHECK (role IN (''Admin'', ''Doctor'', ''Finance'', ''Community''))';
+        END IF;
+    END IF;
+END$$;

@@ -6,6 +6,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- ============================================================================
 CREATE TABLE tenants (
     tenant_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    account_id VARCHAR(20) UNIQUE NOT NULL,
     clinic_name VARCHAR(255) NOT NULL,
     moh_license_number VARCHAR(100) UNIQUE NOT NULL, -- Crucial for Saudi Gov compliance
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -134,7 +135,7 @@ CREATE TABLE clinic_users (
     username VARCHAR(100) NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    role VARCHAR(20) NOT NULL CHECK (role IN ('Admin', 'Doctor', 'Finance')),
+    role VARCHAR(20) NOT NULL CHECK (role IN ('Admin', 'Doctor', 'Finance', 'Community')),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT clinic_users_tenant_fkey FOREIGN KEY (tenant_id) REFERENCES tenants(tenant_id) ON DELETE CASCADE

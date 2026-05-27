@@ -15,9 +15,18 @@ export async function POST(request) {
   }
 
   try {
+    const tenantResult = await pool.query('SELECT tenant_id FROM tenants WHERE account_id = $1', [accountId]);
+    if (tenantResult.rowCount === 0) {
+      return Response.json({
+        success: false,
+        message: 'Account not found. Please contact daviddegroeve@gmail.com for help if you do not know your Account ID or Username.',
+      });
+    }
+
+    const tenant = tenantResult.rows[0];
     const userResult = await pool.query(
       'SELECT email FROM clinic_users WHERE tenant_id = $1 AND username = $2',
-      [accountId, username]
+      [tenant.tenant_id, username]
     );
 
     if (userResult.rowCount === 0) {

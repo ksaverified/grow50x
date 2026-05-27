@@ -21,22 +21,27 @@ app.get('/api/health', (req, res) => {
 });
 
 app.post('/api/login', async (req, res) => {
-  const { accountId, username, password } = req.body;
+  const accountId = req.body.accountId?.trim();
+  const username = req.body.username?.trim();
+  const password = req.body.password;
 
   if (!accountId || !username || !password) {
     return res.status(400).json({ success: false, message: 'Account ID, Username, and Password are required.' });
   }
 
   try {
-    const tenantResult = await pool.query('SELECT tenant_id, clinic_name FROM tenants WHERE tenant_id = $1', [accountId]);
+    const tenantResult = await pool.query(
+      'SELECT tenant_id, clinic_name FROM tenants WHERE lower(account_id) = lower($1)',
+      [accountId]
+    );
     if (tenantResult.rowCount === 0) {
       return res.status(401).json({ success: false, message: 'Clinic Account ID not found.' });
     }
 
     const tenant = tenantResult.rows[0];
     const userResult = await pool.query(
-      'SELECT user_id, username, role, email, password_hash FROM clinic_users WHERE tenant_id = $1 AND username = $2',
-      [accountId, username]
+      'SELECT user_id, username, role, email, password_hash FROM clinic_users WHERE tenant_id = $1 AND lower(username) = lower($2)',
+      [tenant.tenant_id, username]
     );
 
     if (userResult.rowCount === 0) {
@@ -67,16 +72,30 @@ app.post('/api/login', async (req, res) => {
 });
 
 app.post('/api/forgot-password', async (req, res) => {
-  const { accountId, username } = req.body;
+  const accountId = req.body.accountId?.trim();
+  const username = req.body.username?.trim();
 
   if (!accountId || !username) {
     return res.status(400).json({ success: false, message: 'Account ID and Username are required to request a password reset.' });
   }
 
   try {
+    const tenantResult = await pool.query(
+      'SELECT tenant_id FROM tenants WHERE lower(account_id) = lower($1)',
+      [accountId]
+    );
+
+    if (tenantResult.rowCount === 0) {
+      return res.json({
+        success: false,
+        message: 'Account not found. Please contact daviddegroeve@gmail.com for help if you do not know your Account ID or Username.',
+      });
+    }
+
+    const tenantId = tenantResult.rows[0].tenant_id;
     const userResult = await pool.query(
-      'SELECT email FROM clinic_users WHERE tenant_id = $1 AND username = $2',
-      [accountId, username]
+      'SELECT email FROM clinic_users WHERE tenant_id = $1 AND lower(username) = lower($2)',
+      [tenantId, username]
     );
 
     if (userResult.rowCount === 0) {

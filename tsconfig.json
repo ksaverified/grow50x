@@ -27,10 +27,14 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
   "include": [
     "app",
+    "components",
     ".next/types/**/*.ts"
   ],
   "references": [

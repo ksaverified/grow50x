@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "seed": "node seed-demo.js",
+    "start:all": "docker compose up --build",
+    "seed": "node database/seed-demo.js",
     "docs:review": "node scripts/docs-review.js",
     "lint": "next lint"
   },
@@ -15,6 +16,7 @@
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.3.1",
     "next": "^14.2.5",
+    "nodemailer": "^6.9.7",
     "pg": "^8.11.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

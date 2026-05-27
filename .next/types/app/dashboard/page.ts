@@ -1,4 +1,4 @@
-// File: C:\dev\Grow50X - Ollama\app\dashboard\page.jsx
+// File: C:\dev\Grow50X - Ollama - Design\app\dashboard\page.jsx
 import * as entry from '../../../../app/dashboard/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

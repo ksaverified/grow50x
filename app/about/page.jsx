@@ -1,78 +1,96 @@
+'use client';
+
 import Link from 'next/link';
 
 export default function About() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      <header className="sticky top-0 z-10 bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-blue-600">ClinicFlow</h1>
-            <p className="text-sm text-slate-600">Meet the team building the next generation of clinic operations software.</p>
-          </div>
-          <nav className="flex gap-4 items-center">
-            <Link href="/" className="text-slate-700 font-medium hover:text-blue-600">
-              Home
-            </Link>
-            <Link href="/plans" className="text-slate-700 font-medium hover:text-blue-600">
-              Plans
-            </Link>
-            <Link href="/about" className="text-slate-700 font-medium hover:text-blue-600">
-              About
-            </Link>
-            <Link
-              href="/login"
-              className="px-4 py-2 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition"
-            >
-              Clinic Login
+    <div className="min-h-screen bg-slate-50 flex flex-col selection:bg-teal-500/10 selection:text-teal-700">
+      {/* Header */}
+      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200/80">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link href="/" className="group flex items-center gap-3.5 hover:opacity-90 transition">
+            <div className="rounded-xl bg-gradient-to-tr from-teal-500 to-emerald-450 p-2 shadow-md shadow-teal-500/10 text-white">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-slate-900 font-display">ClinicFlow</h1>
+            </div>
+          </Link>
+          <nav className="flex gap-6 items-center">
+            <Link href="/" className="text-sm text-slate-600 font-semibold hover:text-teal-600 transition">Home</Link>
+            <Link href="/plans" className="text-sm text-slate-600 font-semibold hover:text-teal-600 transition">Plans</Link>
+            <Link href="/about" className="text-sm text-teal-600 font-bold transition">About</Link>
+            <Link href="/login" className="px-4 py-2 bg-slate-950 text-white rounded-full text-xs font-bold hover:bg-teal-700 transition">
+              Sign In
             </Link>
           </nav>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-16">
-        <section className="mb-20">
-          <h2 className="text-4xl font-bold text-slate-900 mb-8">About Us</h2>
-          <p className="text-xl text-slate-600 leading-relaxed">
-            ClinicFlow is built to help medical providers manage clinics with a secure, tenant-aware platform. Our mission is to give every clinic the tools they need to deliver consistent, efficient care while keeping clinic data isolated and protected.
-          </p>
-        </section>
-
-        <section className="grid grid-cols-3 gap-8 mb-20">
-          <div className="bg-white rounded-lg shadow-md p-8">
-            <h3 className="text-xl font-bold text-slate-900 mb-3">Executive Leadership</h3>
-            <p className="text-slate-600">
-              We guide the product vision, strategy, and customer success efforts to make ClinicFlow the best choice for multi-clinic healthcare practices.
-            </p>
+      {/* Main Container */}
+      <main className="flex-1 max-w-7xl mx-auto px-6 py-16 w-full space-y-16">
+        
+        {/* Intro Section */}
+        <section className="max-w-3xl space-y-6 animate-slide-up">
+          <div className="inline-flex items-center gap-2 rounded-full border border-teal-150 bg-teal-50/50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-teal-800">
+            Our Mission & Core Values
           </div>
-          <div className="bg-white rounded-lg shadow-md p-8">
-            <h3 className="text-xl font-bold text-slate-900 mb-3">Product & Operations</h3>
-            <p className="text-slate-600">
-              Our product team defines how clinics, users, and workflows interact. We focus on a clean experience for Admin, Doctor, and Finance roles.
-            </p>
-          </div>
-          <div className="bg-white rounded-lg shadow-md p-8">
-            <h3 className="text-xl font-bold text-slate-900 mb-3">Engineering & Support</h3>
-            <p className="text-slate-600">
-              Engineering delivers the platform; support helps clinics onboard and stay successful. We build secure access models for tenant ecosystems and clinic-level databases.
-            </p>
-          </div>
-        </section>
-
-        <section className="bg-slate-900 text-white rounded-lg p-12">
-          <p className="text-sm font-semibold text-blue-400 uppercase tracking-wide mb-2">What we believe</p>
-          <h2 className="text-3xl font-bold mb-6">
-            Clinic software should be simple, secure, and tailored for real medical teams
+          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 font-display">
+            Securing clinical workflows for the next generation.
           </h2>
-          <p className="text-lg leading-relaxed text-slate-300">
-            Every clinic is different, but every clinic deserves a stable system. Our platform keeps clinic data separated by Account ID, while users sign in with the correct role and permissions. This is how we help clinics scale with confidence.
+          <p className="text-md text-slate-500 leading-relaxed font-normal">
+            ClinicFlow builds specialized clinic environments. We empower medical practices to run smoothly by isolating tenant records, simplifying appointments, and standardizing compliance audits.
           </p>
+        </section>
+
+        {/* Division Cards */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch animate-scale-in">
+          <div className="glass-card bg-white rounded-3xl p-8 border border-slate-200/80 space-y-4">
+            <span className="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-sm">01</span>
+            <h3 className="text-lg font-bold text-slate-900 font-display">Executive Vision</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              We design product frameworks and growth models aligned directly with regulatory structures, healthcare compliance guidelines, and medical team experiences.
+            </p>
+          </div>
+
+          <div className="glass-card bg-white rounded-3xl p-8 border border-slate-200/80 space-y-4">
+            <span className="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-bold text-sm">02</span>
+            <h3 className="text-lg font-bold text-slate-900 font-display">Product & Workflows</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              We craft simplified user interfaces tailored to each role, avoiding workflow clutter so Doctors, Nurses, and Accountants can complete tasks quickly.
+            </p>
+          </div>
+
+          <div className="glass-card bg-white rounded-3xl p-8 border border-slate-200/80 space-y-4">
+            <span className="w-8 h-8 rounded-lg bg-violet-50 text-violet-800 flex items-center justify-center font-bold text-sm">03</span>
+            <h3 className="text-lg font-bold text-slate-900 font-display">Engineering Security</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              We maintain the tenant-aware architecture, database segmentations, and active cybersecurity audit checkpoints required to keep health files safe.
+            </p>
+          </div>
+        </section>
+
+        {/* Believe Statement Section */}
+        <section className="bg-slate-900 text-white rounded-[2.5rem] p-12 border border-slate-800 relative overflow-hidden shadow-2xl">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl -z-10" />
+          
+          <div className="max-w-2xl space-y-6">
+            <span className="text-xs font-bold uppercase tracking-widest text-teal-400">Our Beliefs</span>
+            <h3 className="text-3xl font-extrabold tracking-tight font-display leading-tight">
+              Clinical software must be robust, secure, and tailored to daily healthcare needs.
+            </h3>
+            <p className="text-slate-300 text-sm leading-relaxed font-normal">
+              Every clinic operates differently, but every clinic requires data isolation and absolute stability. ClinicFlow organizes medical records by tenant Account ID, allowing practitioners to sign in and proceed with confidence.
+            </p>
+          </div>
         </section>
       </main>
 
-      <footer className="bg-slate-900 text-slate-400 mt-16 py-8 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <p>ClinicFlow is committed to secure, multi-tenant medical practice management.</p>
-        </div>
+      {/* Footer */}
+      <footer className="bg-slate-950 text-slate-550 border-t border-slate-900 py-8 text-center text-xs">
+        ClinicFlow builds modern multi-tenant clinic operations platforms.
       </footer>
     </div>
   );

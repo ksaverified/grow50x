@@ -1,0 +1,21 @@
+{
+  "buildCommand": "next build",
+  "devCommand": "next dev",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "nodeVersion": "18.x",
+  "env": {
+    "DATABASE_URL": {
+      "description": "PostgreSQL connection string from Supabase"
+    },
+    "EMAIL_SERVICE": {
+      "description": "Email service provider (gmail)"
+    },
+    "EMAIL_USER": {
+      "description": "Email service username or sender address"
+    },
+    "EMAIL_PASSWORD": {
+      "description": "Email service app-specific password"
+    }
+  }
+}
