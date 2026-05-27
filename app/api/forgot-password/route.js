@@ -1,17 +1,6 @@
-import { Pool } from 'pg';
-
-const connectionString = process.env.DATABASE_URL;
-
-const pool = connectionString ? new Pool({ connectionString }) : null;
+import { findTenantByAccountId, findUserByTenantAndUsername } from '@/lib/mockData';
 
 export async function POST(request) {
-  if (!pool) {
-    console.error('Forgot password error: DATABASE_URL is not configured.');
-    return Response.json(
-      { success: false, message: 'Database not configured on this environment. Set DATABASE_URL.' },
-      { status: 500 }
-    );
-  }
   const { accountId, username } = await request.json();
 
   if (!accountId || !username) {
@@ -22,21 +11,10 @@ export async function POST(request) {
   }
 
   try {
-    const tenantResult = await pool.query('SELECT tenant_id FROM tenants WHERE account_id = $1', [accountId]);
-    if (tenantResult.rowCount === 0) {
-      return Response.json({
-        success: false,
-        message: 'Account not found. Please contact daviddegroeve@gmail.com for help if you do not know your Account ID or Username.',
-      });
-    }
+    const tenant = findTenantByAccountId(accountId);
+    const user = tenant ? findUserByTenantAndUsername(tenant.tenantId, username) : null;
 
-    const tenant = tenantResult.rows[0];
-    const userResult = await pool.query(
-      'SELECT email FROM clinic_users WHERE tenant_id = $1 AND username = $2',
-      [tenant.tenant_id, username]
-    );
-
-    if (userResult.rowCount === 0) {
+    if (!tenant || !user) {
       return Response.json({
         success: false,
         message: 'Account not found. Please contact daviddegroeve@gmail.com for help if you do not know your Account ID or Username.',
