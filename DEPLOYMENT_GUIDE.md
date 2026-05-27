@@ -52,7 +52,16 @@ https://github.com/ksaverified/grow50x
 2. Sign up / Log in with your new account
 3. Click **Add New** → **Project**
 4. Search for `grow50x` and select it
-5. Vercel will auto-detect Next.js settings
+5. If Vercel does not auto-detect the framework, choose **Other** and set the settings manually (see below)
+
+### 3.1.1 If Vercel shows "Other" preset
+If Vercel does not auto-detect Next.js, use these values:
+- Root Directory: `./`
+- Install Command: `npm install`
+- Build Command: `npm run build`
+- Output Directory: `.next`
+
+The repository already contains `vercel.json` with the correct Next.js settings, so Vercel will still deploy correctly.
 
 ### 3.2 Configure Environment Variables
 In the Vercel dashboard:

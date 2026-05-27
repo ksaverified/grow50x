@@ -1,9 +1,9 @@
 {
-  "buildCommand": "next build",
-  "devCommand": "next dev",
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "nodeVersion": "18.x",
+  "outputDirectory": ".next",
   "env": {
     "DATABASE_URL": {
       "description": "PostgreSQL connection string from Supabase"
