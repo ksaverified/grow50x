@@ -35,7 +35,7 @@ postgresql://postgres:[YOUR-PASSWORD]@db.sjyfqzsxumpivfudgohu.supabase.co:5432/p
 ### Gmail Setup (Recommended)
 1. Go to [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords)
 2. Select **Mail** and **Windows Computer** (or your device)
-3. Generate a 16-character app password
+3. Generate a 16-character app password -> hfkl pbpb yqzg gbzi
 4. Copy this password
 
 ---
@@ -67,10 +67,10 @@ The repository already contains `vercel.json` with the correct Next.js settings,
 In the Vercel dashboard:
 1. Go to **Settings** → **Environment Variables**
 2. Add the following variables:
-   - `DATABASE_URL`: `postgresql://postgres:[YOUR-PASSWORD]@db.sjyfqzsxumpivfudgohu.supabase.co:5432/postgres`
+   - `DATABASE_URL`: `postgresql://postgres:gr8wTh50x!!!@db.sjyfqzsxumpivfudgohu.supabase.co:5432/postgres`
    - `EMAIL_SERVICE`: `gmail`
    - `EMAIL_USER`: `ksaverified@gmail.com`
-   - `EMAIL_PASSWORD`: (your Gmail app-specific password)
+   - `EMAIL_PASSWORD`: hfkl pbpb yqzg gbzi
 3. Click **Deploy**
 
 ### 3.3 Monitor Your Deployment
